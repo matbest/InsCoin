@@ -16,15 +16,25 @@ function loadScript(url, callback)
     head.appendChild(script);
 }
 
-var ETHinters = function()
-{
-  console.log("ethinters loaded");
-}
-
 
 
 loadScript("web3.js", ETHinters);
 loadScript("ethjs.js", ETHinters);
+
+
+ignoreMetamask = true;
+
+function GetAccountAddress()
+{
+	if (ignoreMetamask == true)
+	{
+		return '0x7099B34900d2A33AA124fc5bA2a8a90E5dD5EBE1';
+	}
+	else
+	{
+		return web3.eth.accounts[0];
+	}
+}
 
 function loadContract(contractAddress, contractABI)
 {
@@ -55,4 +65,51 @@ function loadContract(contractAddress, contractABI)
   return contract;
 	//myContract.getPoints.call().then(function(a){a,console.log(a[0].words,a,a.toString(),+a.toString(),'Bananas');});
 
+}
+
+function isAvailable(x,y,func)
+{
+  var contractAddress = '0x484dbc240b7ebe7a23ab6fb4133e0df0cd6c2200';
+  var plotContract = loadContract(contractAddress, ContractABI);
+  var activeAccount = GetAccountAddress();
+
+  var available = false;
+  plotContract.LocationAssigned(x,y,function(err, res){
+    if (err)
+    {
+      console.log('Hmm, there was an error' + String(err));
+    }
+    else
+    {
+      console.log('Making sending with tx hash: ' + String(res));
+      var free = !res[0]
+      func(free);
+    }
+  });
+}
+
+function MintPlot(x,y)
+{
+  var contractAddress = '0x484dbc240b7ebe7a23ab6fb4133e0df0cd6c2200';
+  var plotContract = loadContract(contractAddress, ContractABI);
+  var activeAccount = GetAccountAddress();
+
+  plotContract.mint(x,y, {from: activeAccount, gas: 1000000},function(err, res){
+    if (err)
+    {
+      done = true;
+      console.log('Hmm, there was an error' + String(err));
+    }
+    else
+    {
+      done = true;
+      console.log('Making sending with tx hash: ' + String(res));
+    }
+  });
+
+}
+
+var ETHinters = function()
+{
+  console.log("ethinters loaded");
 }

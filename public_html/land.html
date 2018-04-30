@@ -186,65 +186,69 @@ function canMove(x, y)
 function KeyUp(e)
 {
     if((e.which == 38) && canMove(player.x, player.y-1))//Up arrow
-        player.y--;
+    {
+      player.y--;
+      SetupBuyButton(player.x,player.y);
+    }
     else if((e.which == 40) && canMove(player.x, player.y+1)) // down arrow
-        player.y++;
+    {    player.y++;
+        SetupBuyButton(player.x,player.y);
+    }
     else if((e.which == 37) && canMove(player.x-1, player.y))
-        player.x--;
+    {    player.x--;
+        SetupBuyButton(player.x,player.y);
+    }
     else if((e.which == 39) && canMove(player.x+1, player.y))
-        player.x++;
+    {    player.x++;
+        SetupBuyButton(player.x,player.y);
+    }
     draw();
+
     e.preventDefault();
 }
 document.addEventListener("keyup",KeyUp);
 
 draw();
 
-ignoreMetamask = true;
 
-function GetAccountAddress()
+var assert = function(condition, message) {
+    if (!condition)
+        throw Error("Assert failed" + (typeof message !== "undefined" ? ": " + message : ""));
+};
+
+assert(1===1);
+
+function isNum(data)
 {
-	if (ignoreMetamask == true)
-	{
-		return '0x7099B34900d2A33AA124fc5bA2a8a90E5dD5EBE1';
-	}
-	else
-	{
-		return web3.eth.accounts[0];
-	}
+	return !isNaN(parseFloat(data)) && typeof data !== 'string';
 }
 
-function myBuyFunction()
+function SetBuyButtonStatus(st)
 {
-  console.log("Buy Start!");
+    document.getElementById("BuyButton").disabled = !st;
+    console.log("Setting buy button status to ", st);
+}
+function SetupBuyButton(x,y)
+{
+  console.log("Testing to see if location ", x,y, "is free");
+  if (isAvailable(x,y,SetBuyButtonStatus));
+}
+function myBuyFunction( )
+{
+  var x = player.x;
+  var y = player.y;
+  assert(isNum(x),'oops not a number');
+  assert(isNum(y));
 
-  var contractAddress = '0x484dbc240b7ebe7a23ab6fb4133e0df0cd6c2200';
-  var plotContract = loadContract(contractAddress, ContractABI);
-  //plotContract.mint(1,1);
-  //
-   /*
-  plotContract.mint.call(1,1).then(function(a)
+  console.log("Buying ",x ,", ", y );
+  if (isAvailable(x,y))
   {
-    console.log(a);
-    el('#IPScore').innerHTML =a[0].words;
-  });
-*/
-var activeAccount = GetAccountAddress();
-
-  plotContract.mint(2,2, {from: activeAccount, gas: 1000000},function(err, res){
-		if (err)
-		{
-			done = true;
-			console.log('Hmm, there was an error' + String(err));
-		}
-		else
-		{
-			done = true;
-			console.log('Making sending with tx hash: ' + String(res));
-		}
-		});
-
-
+    MintPlot(x,y);
+  }
+  else
+  {
+    console.log("plot was not available: ",x,y);
+  }
   console.log("Buy End!");
 
 }
@@ -272,7 +276,7 @@ function mySaveFunction()
 <div class="divTableCell"  id="R_X">0</div>
 <div class="divTableCell" id="R_Y">0</div>
 <div class="divTableCell">
-  <button type="button"  onclick="myBuyFunction()">Buy</button>
+  <button type="button" id="BuyButton" onclick="myBuyFunction()">Buy</button>
   <button type="button" onclick="mySaveFunction()" >Save</button>
 </div></div>
 <div class="divTableRow">
