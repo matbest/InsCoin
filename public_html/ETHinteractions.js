@@ -28,7 +28,7 @@ loadScript("ethjs.js", ETHinters);
 
 function loadContract(contractAddres, contactABI)
 {
-  var ignoreMetamask = false;
+  var ignoreMetamask = true;
 
 
 
