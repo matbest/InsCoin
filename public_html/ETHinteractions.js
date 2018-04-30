@@ -26,7 +26,7 @@ var ETHinters = function()
 loadScript("web3.js", ETHinters);
 loadScript("ethjs.js", ETHinters);
 
-function loadContract(contractAddres, contactABI)
+function loadContract(contractAddress, contractABI)
 {
   var ignoreMetamask = true;
 
@@ -54,7 +54,5 @@ function loadContract(contractAddres, contactABI)
 	var contract = contractAbi.at(contractAddress);
   return contract;
 	//myContract.getPoints.call().then(function(a){a,console.log(a[0].words,a,a.toString(),+a.toString(),'Bananas');});
-
-
 
 }

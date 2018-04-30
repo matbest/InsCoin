@@ -75,8 +75,11 @@ body {
 </head>
 <canvas id="GameBoardCanvas"  width="400" height="400"></canvas>
 
+  <script type="text/javascript"></script>
 
   <script type="text/javascript">
+
+
     function loadScript(url, callback)
     {
       // Adding the script tag to the head as suggested before
@@ -101,286 +104,9 @@ body {
 
     loadScript("./ETHinteractions.js", doneLoading);
   </script>
-<script type= "text/javascript">
-ContactABI = [
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_idx",
-				"type": "uint256"
-			},
-			{
-				"name": "_link",
-				"type": "string"
-			}
-		],
-		"name": "publish",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "grid",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "withdraw",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_idx",
-				"type": "uint256"
-			}
-		],
-		"name": "forceNSFW",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_idx",
-				"type": "uint256"
-			},
-			{
-				"name": "_newOwner",
-				"type": "address"
-			}
-		],
-		"name": "setAdOwner",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "locations",
-		"outputs": [
-			{
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"name": "x",
-				"type": "uint256"
-			},
-			{
-				"name": "y",
-				"type": "uint256"
-			},
-			{
-				"name": "link",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "weiPixelPrice",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_x",
-				"type": "uint256"
-			},
-			{
-				"name": "_y",
-				"type": "uint256"
-			}
-		],
-		"name": "buy",
-		"outputs": [
-			{
-				"name": "idx",
-				"type": "uint256"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"name": "_withdrawWallet",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "idx",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "x",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "y",
-				"type": "uint256"
-			}
-		],
-		"name": "BuyEvent",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "idx",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "link",
-				"type": "string"
-			}
-		],
-		"name": "PublishEvent",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "idx",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "to",
-				"type": "address"
-			}
-		],
-		"name": "SetAdOwnerEvent",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	}
-];
+<script type= "text/javascript" src="/ContractABI.js"></script>
 
-</script>
 <script type="text/javascript">
-
-//var canvas = $('#GameBoardCanvas');
 
 var canvas = document.getElementById("GameBoardCanvas");
 var el = function(id){ return document.querySelector(id); };
@@ -474,9 +200,53 @@ document.addEventListener("keyup",KeyUp);
 
 draw();
 
+ignoreMetamask = true;
+
+function GetAccountAddress()
+{
+	if (ignoreMetamask == true)
+	{
+		return '0x7099B34900d2A33AA124fc5bA2a8a90E5dD5EBE1';
+	}
+	else
+	{
+		return web3.eth.accounts[0];
+	}
+}
+
 function myBuyFunction()
 {
-  console.log("Buy!");
+  console.log("Buy Start!");
+
+  var contractAddress = '0x484dbc240b7ebe7a23ab6fb4133e0df0cd6c2200';
+  var plotContract = loadContract(contractAddress, ContractABI);
+  //plotContract.mint(1,1);
+  //
+   /*
+  plotContract.mint.call(1,1).then(function(a)
+  {
+    console.log(a);
+    el('#IPScore').innerHTML =a[0].words;
+  });
+*/
+var activeAccount = GetAccountAddress();
+
+  plotContract.mint(2,2, {from: activeAccount, gas: 1000000},function(err, res){
+		if (err)
+		{
+			done = true;
+			console.log('Hmm, there was an error' + String(err));
+		}
+		else
+		{
+			done = true;
+			console.log('Making sending with tx hash: ' + String(res));
+		}
+		});
+
+
+  console.log("Buy End!");
+
 }
 
 function mySaveFunction()
