@@ -174,7 +174,7 @@ ContractABI = [
 		"inputs": [
 			{
 				"name": "price",
-				"type": "uint32"
+				"type": "uint256"
 			}
 		],
 		"name": "SetPlotPrice",
@@ -259,13 +259,9 @@ ContractABI = [
 		"type": "event"
 	},
 	{
-		"constant": false,
-		"inputs": [],
-		"name": "withdraw",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "fallback"
 	},
 	{
 		"anonymous": false,
@@ -290,9 +286,13 @@ ContractABI = [
 		"type": "event"
 	},
 	{
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "fallback"
+		"constant": false,
+		"inputs": [],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -403,6 +403,20 @@ ContractABI = [
 		"constant": true,
 		"inputs": [],
 		"name": "getBalance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "GetPlotPrice",
 		"outputs": [
 			{
 				"name": "",

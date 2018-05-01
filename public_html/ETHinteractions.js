@@ -1,4 +1,4 @@
-var contractAddress = '0x64dcc279bf1436f7f51faa6f7d5174a0477dbba1';
+var contractAddress = '0xda6554fdca483b215f0b736930661bc8f335ce46';
 
 function loadScript(url, callback)
 {
@@ -21,7 +21,7 @@ function loadScript(url, callback)
 
 loadScript("web3.js", ETHinters);
 loadScript("ethjs.js", ETHinters);
-
+ ethinwei = 1000000000000000000; // This is 1 ETH
 
 ignoreMetamask = true;
 
@@ -89,6 +89,24 @@ function isAvailable(x,y,func)
   });
 }
 
+function GetPlotPrice(func)
+{
+  var plotContract = loadContract(contractAddress, ContractABI);
+  //var activeAccount = GetAccountAddress();
+
+//  var a =   plotContract.myPlotPrice;
+
+
+plotContract.GetPlotPrice.call().then(function(a)
+  {
+    console.log(a.toString(10));
+    price = Number(a[0]);
+    price /=ethinwei;
+    func(price.toString())
+  });
+
+
+}
 function MintPlot(x,y)
 {
   var message = 'Hello World!';
