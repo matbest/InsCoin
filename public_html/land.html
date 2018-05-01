@@ -219,8 +219,12 @@ var assert = function(condition, message) {
 assert(1===1);
 
 function isNum(data)
-{
+{/*
+  if (typeof(data !==  “number”))
+  return false;
 	return !isNaN(parseFloat(data)) && typeof data !== 'string';
+  */
+  return !isNaN(data);
 }
 
 function SetBuyButtonStatus(st)
@@ -237,19 +241,22 @@ function myBuyFunction( )
 {
   var x = player.x;
   var y = player.y;
-  assert(isNum(x),'oops not a number');
-  assert(isNum(y));
+  if(!isNum(x))
+    console.error('X -oops not a number');
+  if(!isNum(y))
+    console.error('y -oops not a number');
 
   console.log("Buying ",x ,", ", y );
-  if (isAvailable(x,y))
-  {
-    MintPlot(x,y);
-  }
-  else
-  {
-    console.log("plot was not available: ",x,y);
-  }
+  isAvailable(x,y,MintPlot(x,y));
   console.log("Buy End!");
+
+}
+function GetPriceforNewPlot()
+{
+
+}
+function GetPriceforSaving()
+{
 
 }
 
@@ -276,7 +283,7 @@ function mySaveFunction()
 <div class="divTableCell"  id="R_X">0</div>
 <div class="divTableCell" id="R_Y">0</div>
 <div class="divTableCell">
-  <button type="button" id="BuyButton" onclick="myBuyFunction()">Buy</button>
+  <button type="button" id="BuyButton" onclick="myBuyFunction()">Buy</button><br>
   <button type="button" onclick="mySaveFunction()" >Save</button>
 </div></div>
 <div class="divTableRow">

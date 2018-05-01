@@ -1,3 +1,4 @@
+var contractAddress = '0x64dcc279bf1436f7f51faa6f7d5174a0477dbba1';
 
 function loadScript(url, callback)
 {
@@ -69,7 +70,7 @@ function loadContract(contractAddress, contractABI)
 
 function isAvailable(x,y,func)
 {
-  var contractAddress = '0x484dbc240b7ebe7a23ab6fb4133e0df0cd6c2200';
+
   var plotContract = loadContract(contractAddress, ContractABI);
   var activeAccount = GetAccountAddress();
 
@@ -90,20 +91,21 @@ function isAvailable(x,y,func)
 
 function MintPlot(x,y)
 {
-  var contractAddress = '0x484dbc240b7ebe7a23ab6fb4133e0df0cd6c2200';
+  var message = 'Hello World!';
+  var EthinWei = 1000000000000000000; // This is 1 ETH
+  var price = 0.01*EthinWei;
+
   var plotContract = loadContract(contractAddress, ContractABI);
   var activeAccount = GetAccountAddress();
 
-  plotContract.mint(x,y, {from: activeAccount, gas: 1000000},function(err, res){
+  plotContract.mint(x,y, {from: activeAccount, value: price, gas: 1000000},function(err, res){
     if (err)
     {
-      done = true;
-      console.log('Hmm, there was an error' + String(err));
+      console.log('Plot Failed to buy, because:' + String(err));
     }
     else
     {
-      done = true;
-      console.log('Making sending with tx hash: ' + String(res));
+      console.log('plot Bought! ' + String(res));
     }
   });
 
