@@ -1,10 +1,44 @@
 pragma solidity ^0.4.10;
 
 import 'https://github.com/OpenZeppelin/zeppelin-solidity/contracts/token/ERC721/ERC721BasicToken.sol';
-import 'https://github.com/OpenZeppelin/zeppelin-solidity/contracts/token/ERC721/ERC721.sol';
+import 'https://github.com/OpenZeppelin/zeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract myTest721Token is ERC721BasicToken 
+contract myTest721Token is ERC721BasicToken, Ownable
 {
+     // Payment stuff -- //
+
+
+    uint256 ethinwei = 1000000000000000000; // This is 1 ETH
+    mapping(address => uint) public balances;
+    uint256 myPlotPrice;
+
+     constructor() public payable
+     {
+        // constructor needs `payable` keyword.
+        myPlotPrice = ethinwei/100;
+    }
+
+     function() public payable
+     {
+    // fallback `payable` function is needed for a contract to
+    // accept ETH payments.
+     }
+
+    function SetPlotPrice(uint32 price) external  onlyOwner
+    {
+        myPlotPrice = price;
+    }
+
+    function sendEth() payable public returns (bool)
+    {
+        // Here, the ETH value being sent is available as `msg.value`.
+        balances[msg.sender] = balances[msg.sender] + msg.value;
+        // This function also takes in a message that is 32 chars max.
+        // Also returns a bool as an example.
+        return true;
+    }
+
+    // -- Payment stuff -- //
 
     struct Plot
     {
@@ -27,8 +61,9 @@ contract myTest721Token is ERC721BasicToken
         return output;
     }
 
-    function mint(uint32 x, uint32 y) external
+    function mint(uint32 x, uint32 y) public payable
     {
+        require(msg.value == myPlotPrice);
         bool PlotAssigned = LocationAssigned(x,y) ;
         require (PlotAssigned == false,' sorry - Already assigned');
 
@@ -65,4 +100,19 @@ contract myTest721Token is ERC721BasicToken
         mintedAt = plot.mintedAt;
     }
 
+
+    // -- Payment -- //
+     function withdraw() external onlyOwner {
+        msg.sender.transfer(address(this).balance);
+    }
+
+    function deposit(uint256 amount) payable public {
+        require(msg.value == amount);
+        // nothing else to do!
+    }
+
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+    // -- End of Payment -- //
 }
