@@ -1,4 +1,4 @@
-var contractAddress = '0xda6554fdca483b215f0b736930661bc8f335ce46';
+var contractAddress = '0xa208d316a9dbea6885e36a8254ca19f644d51444';
 
 function loadScript(url, callback)
 {
@@ -17,10 +17,9 @@ function loadScript(url, callback)
     head.appendChild(script);
 }
 
+loadScript("js/web3.js", ETHinters);
+loadScript("js/ethjs.js", ETHinters);
 
-
-loadScript("web3.js", ETHinters);
-loadScript("ethjs.js", ETHinters);
  ethinwei = 1000000000000000000; // This is 1 ETH
 
 ignoreMetamask = true;
