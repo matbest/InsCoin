@@ -59,8 +59,6 @@ blockPercentage = function(percentage)
 }
 AllocateMap = function()
 {
-	console.log("Map size is ", width, "X",height);
-
 	for (var i = 0; i < height * 2; i++)
 	{
 		map[i] = [];
@@ -70,6 +68,24 @@ AllocateMap = function()
 		}
 	}
 }
+ConsolePrintMap = function()
+{
+	var row = "";
+	console.log("Map size is ", width, "X",height);
+	for (var i = 0; i < height * 2; i++)
+	{
+		for (var j = 0; j < width * 2; j++)
+		{
+			if (map[i][j] === true)
+			  row = row.concat(" ");
+			else
+				row = row.concat("#");
+		}
+		console.log(row);
+		row= "";
+	}
+}
+
 
 //Setup the empty map and the route start
 init = function()
@@ -97,7 +113,7 @@ init = function()
 	xStart = (width / 2) | 0; //Horisontal starting position
 	yStart = (height / 2) | 0; //Vertical starting position
 
-	//Map starts and height / width = true ?? - but why?
+	//route starts here.
   map[yStart * 2][xStart * 2] = true;
 
 	//Begining of Route
@@ -172,7 +188,7 @@ buttonRandomSeed.addEventListener("click", function()
 loop = function()
 {
 	routelength = route.length;
-  x = route[routelength - 1][0] | 0; // | means cast to an int
+  x = route[routelength - 1][0] | 0; // |0 means cast to an int
   y = route[routelength - 1][1] | 0;
 
   var directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -206,6 +222,10 @@ loop = function()
       );
       timer = setTimeout(loop, delay);
     }
+		else {
+			ConsolePrintMap();
+		}
+
     return;
   }
 
@@ -230,6 +250,7 @@ loop = function()
 
 settings.display();
 loop();
+
 setInterval(settings.check, 400);
 
 </script>
