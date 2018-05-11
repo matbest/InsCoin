@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<link href="css/MazeGen.css" rel="stylesheet">
+</head>
+
+<body>
+	<div>
+	  <canvas id="canvas" width="640" height="480"></canvas>
+	  <ul>
+	    <li><label>Width:</label><input id=width type="text"/></li>
+	    <li><label>Height:</label><input id=height type="text"/></li>
+	    <li><label>Path Width:</label><input id=pathwidth type="text"/></li>
+	    <li><label>Wall Width:</label><input id=wallwidth type="text"/></li>
+	    <li><label>Outer Width:</label><input id=outerwidth type="text"/></li>
+	    <li><label>Path Color:</label><input id=pathcolor type="text"/></li>
+	    <li><label>Wall Color:</label><input id=wallcolor type="text"/></li>
+	    <li><label>Seed:</label><input id=seed type="text"/></li>
+	    <li><input id=randomseed type="button" value="Random Seed"/></li>
+	  </ul>
+	</div>
+
+<script type="text/javascript">
+pathWidth = 10; //Width of the Maze Path
+wall = 2; //Width of the Walls between Paths
+outerWall = 2; //Width of the Outer most wall
+width = 25; //Number paths fitted horisontally
+height = 25; //Number paths fitted vertically
+delay = 1; //Delay between algorithm cycles
+xStart = (width / 2) | 0; //Horisontal starting position
+yStart = (height / 2) | 0; //Vertical starting position
+seed = (Math.random() * 100000) | 0; //Seed for random numbers
+wallColor = "#d24"; //Color of the walls
+pathColor = "#222a33"; //Color of the path
+
+randomGen = function(seed)
+{
+  if (seed === undefined) var seed = performance.now();
+  return function() {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+};
+
+blockPercentage = function(percentage)
+{
+	for (var i = 0; i < height * 2; i++)
+	{
+		for (var j = 0; j < width * 2; j++)
+		{
+			var random_boolean = Math.random() >= 1-percentage;
+			map[i][j] = random_boolean;
+		}
+	}
+}
+AllocateMap = function()
+{
+	console.log("Map size is ", width, "X",height);
+
+	for (var i = 0; i < height * 2; i++)
+	{
+		map[i] = [];
+		for (var j = 0; j < width * 2; j++)
+		{
+			map[i][j] = false;
+		}
+	}
+}
+
+//Setup the empty map and the route start
+init = function()
+{
+
+  canvas = document.querySelector("canvas");
+  ctx = canvas.getContext("2d");
+  canvas.width = outerWall * 2 + width * (pathWidth + wall) - wall;
+  canvas.height = outerWall * 2 + height * (pathWidth + wall) - wall;
+  ctx.fillStyle = wallColor;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = pathColor;
+  ctx.lineCap = "square";
+  ctx.lineWidth = pathWidth;
+  ctx.beginPath();
+
+  // Build empth Map
+  random = randomGen(seed);
+	offset = pathWidth / 2 + outerWall;
+  map = [];
+	AllocateMap();
+	if(0)	blockPercentage(.1);
+
+	xStart = (width / 2) | 0; //Horisontal starting position
+	yStart = (height / 2) | 0; //Vertical starting position
+
+	//Map starts and height / width = true ?? - but why?
+  map[yStart * 2][xStart * 2] = true;
+
+	//Begining of Route
+  route = [[xStart, yStart]];
+
+	//Start Drawing
+  ctx.moveTo(xStart * (pathWidth + wall) + offset, yStart * (pathWidth + wall) + offset);
+};
+
+init();
+
+inputWidth = document.getElementById("width");
+inputHeight = document.getElementById("height");
+inputPathWidth = document.getElementById("pathwidth");
+inputWallWidth = document.getElementById("wallwidth");
+inputOuterWidth = document.getElementById("outerwidth");
+inputPathColor = document.getElementById("pathcolor");
+inputWallColor = document.getElementById("wallcolor");
+inputSeed = document.getElementById("seed");
+buttonRandomSeed = document.getElementById("randomseed");
+
+settings =
+{
+  display: function()
+	{
+    inputWidth.value = width;
+    inputHeight.value = height;
+    inputPathWidth.value = pathWidth;
+    inputWallWidth.value = wall;
+    inputOuterWidth.value = outerWall;
+    inputPathColor.value = pathColor;
+    inputWallColor.value = wallColor;
+    inputSeed.value = seed;
+  },
+  check: function()
+	{
+    if ( inputWidth.value != width ||
+      inputHeight.value != height ||
+      inputPathWidth.value != pathWidth ||
+      inputWallWidth.value != wall ||
+      inputOuterWidth.value != outerWall ||
+      inputPathColor.value != pathColor ||
+      inputWallColor.value != wallColor ||
+      inputSeed.value != seed )
+		{
+      settings.update();
+    }
+  },
+  update: function()
+	{
+    clearTimeout(timer);
+    width = parseFloat(inputWidth.value);
+    height = parseFloat(inputHeight.value);
+    pathWidth = parseFloat(inputPathWidth.value);
+    wall = parseFloat(inputWallWidth.value);
+    outerWall = parseFloat(inputOuterWidth.value);
+    pathColor = inputPathColor.value;
+    wallColor = inputWallColor.value;
+    seed = parseFloat(inputSeed.value);
+    x = (width / 2) | 0;
+    y = (height / 2) | 0;
+    init();
+    loop();
+  }
+};
+
+buttonRandomSeed.addEventListener("click", function()
+{
+  inputSeed.value = (Math.random() * 100000) | 0;
+});
+
+loop = function()
+{
+	routelength = route.length;
+  x = route[routelength - 1][0] | 0; // | means cast to an int
+  y = route[routelength - 1][1] | 0;
+
+  var directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  var frontier = [];
+
+  // Foreach direction (4)
+  for (var i = 0; i < directions.length; i++)
+	{
+		// If the map location exists
+		// If the map location in the direction is false (unvisited)
+    if ( map[(directions[i][1] + y) * 2] != undefined &&
+      	 map[(directions[i][1] + y) * 2][(directions[i][0] + x) * 2] === false )
+		{
+			// add this as a possible direction
+      frontier.push(directions[i]);
+    }
+  }
+
+  // If there are no possible directions
+  if (frontier.length === 0)
+	{
+		// Step back to a previous place where there was an direction possible
+    route.pop();
+
+		// If there is still a route
+    if (route.length > 0)
+		{
+      ctx.moveTo(
+        route[route.length - 1][0] * (pathWidth + wall) + offset,
+        route[route.length - 1][1] * (pathWidth + wall) + offset
+      );
+      timer = setTimeout(loop, delay);
+    }
+    return;
+  }
+
+	//Pick a random Direction from the possibles and add it onto the route.
+  direction = frontier[(random() * frontier.length) | 0];
+  route.push([direction[0] + x, direction[1] + y]);
+
+	// Draw the new step
+  ctx.lineTo(    (direction[0] + x) * (pathWidth + wall) + offset, (direction[1] + y) * (pathWidth + wall) + offset );
+
+	// Assign the map as visited
+	var x1 = (direction[1] + y) * 2;
+	var y1 = (direction[0] + x) * 2;
+	var x2 = direction[1] + y * 2;
+	var y2 = direction[0] + x * 2;
+  map[x1][y1] = true;
+  map[x2][y2] = true;
+
+	ctx.stroke();
+  timer = setTimeout(loop, delay);
+};
+
+settings.display();
+loop();
+setInterval(settings.check, 400);
+
+</script>
+
+
+
+</body>
