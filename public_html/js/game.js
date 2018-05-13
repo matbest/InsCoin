@@ -25,7 +25,8 @@ function KeyUp(e)
     {    WorldModel.player.x++;
 
     }
-    SetupBuyButton(WorldModel.player.x,WorldModel.player.y);
+    if (typeof SetupBuyButton !== "undefined")
+      SetupBuyButton(WorldModel.player.x,WorldModel.player.y);
     draw( WorldModel);
 
     e.preventDefault();

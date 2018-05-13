@@ -2,7 +2,7 @@
 //Draw the game board
 function draw(wm)
 {
-		var canvas = document.getElementById("GameBoardCanvas");
+		var canvas = document.getElementById("movingcanvas");
 		var width = canvas.width;
 		//var blockSize = width/board.length;
 
