@@ -13,21 +13,21 @@ function KeyUp(e)
 {
     if((e.which == 38) && WorldModel.CanMove(WorldModel.player.x, WorldModel.player.y-1))//Up arrow
     {
-      WorldModel.player.y--;
+      MazeWorldModel.player.y--;
     }
     else if((e.which == 40) &&  WorldModel.CanMove(WorldModel.player.x, WorldModel.player.y+1)) // down arrow
-    {    WorldModel.player.y++;
+    {    MazeWorldModel.player.y++;
     }
     else if((e.which == 37) &&  WorldModel.CanMove(WorldModel.player.x-1, WorldModel.player.y))
-    {    WorldModel.player.x--;
+    {    MazeWorldModel.player.x--;
     }
     else if((e.which == 39) &&  WorldModel.CanMove(WorldModel.player.x+1, WorldModel.player.y))
-    {    WorldModel.player.x++;
+    {    MazeWorldModel.player.x++;
 
     }
     if (typeof SetupBuyButton !== "undefined")
-      SetupBuyButton(WorldModel.player.x,WorldModel.player.y);
-    draw( WorldModel);
+      SetupBuyButton(MazeWorldModel.player.x,MazeWorldModel.player.y);
+  //  draw( WorldModel);
 
     e.preventDefault();
 }
