@@ -6,8 +6,8 @@ var MazeWorldModel = {
   pathWidth : 10, //Width of the Maze Path
   wallWidth: 2, //Width of the Walls between Paths
   outerWall : 2, //Width of the Outer most wall
-  width : 10, //Number paths fitted horisontally
-  height : 10, //Number paths fitted vertically
+  width : 25, //Number paths fitted horisontally
+  height : 25, //Number paths fitted vertically
   delay : 0.1, //Delay between algorithm cycles
   xStart : 5, //Horisontal starting position
   yStart : 5, //Vertical starting position
@@ -142,10 +142,24 @@ var MazeWorldModel = {
 
   CanMove : function (x, y)
   {
+    if (typeof this.map == "undefined")
+      console.log("Problem");
+
     var notOffEdge = (y>=0) && (y<this.map.length) && (x >= 0) && (x < this.map[y].length);
-    var notBlocked = (this.map[y][x] == true);
-    if (!notBlocked)
-      console.log("Blocked at (",x,",",y,")");
+    if (notOffEdge)
+    {
+    
+      if (this.map[y][x] == true)
+      {
+        return true;
+      }
+      else
+      {
+        console.log("Blocked at (",x,",",y,")");
+        return false;
+      }
+
+    }
     return  notOffEdge && notBlocked;
   },
 
