@@ -1,4 +1,4 @@
-
+hu
 //The game board 1 = walls, 0 = free space, and -1 = the goal
 
 

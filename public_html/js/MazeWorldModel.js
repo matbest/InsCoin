@@ -4,7 +4,7 @@
 
 var MazeWorldModel = {
   pathWidth : 10, //Width of the Maze Path
-  wall: 2, //Width of the Walls between Paths
+  wallWidth: 2, //Width of the Walls between Paths
   outerWall : 2, //Width of the Outer most wall
   width : 10, //Number paths fitted horisontally
   height : 10, //Number paths fitted vertically
@@ -45,8 +45,8 @@ var MazeWorldModel = {
   	var canvas = document.getElementById("mazecanvas");
     //canvas = document.querySelector("canvas");
     ctx = canvas.getContext("2d");
-    canvas.width = this.outerWall * 2 + this.width * (this.pathWidth + this.wall) - this.wall;
-    canvas.height = this.outerWall * 2 + this.height * (this.pathWidth + this.wall) - this.wall;
+    canvas.width = this.outerWall * 2 + this.width * (this.pathWidth + this.wallWidth) - this.wallWidth;
+    canvas.height = this.outerWall * 2 + this.height * (this.pathWidth + this.wallWidth) - this.wallWidth;
     ctx.fillStyle = this.wallColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -71,7 +71,7 @@ var MazeWorldModel = {
     this.route = [[this.xStart, this.yStart]];
 
   	//Start Drawing
-    ctx.moveTo(this.xStart * (this.pathWidth + this.wall) + offset, this.yStart * (this.pathWidth + this.wall) + offset);
+    ctx.moveTo(this.xStart * (this.pathWidth + this.wallWidth) + offset, this.yStart * (this.pathWidth + this.wallWidth) + offset);
   },
 
   loop : function()
@@ -107,8 +107,8 @@ var MazeWorldModel = {
       if (this.route.length > 0)
   		{
         ctx.moveTo(
-          this.route[this.route.length - 1][0] * (this.pathWidth + this.wall) + offset,
-          this.route[this.route.length - 1][1] * (this.pathWidth + this.wall) + offset
+          this.route[this.route.length - 1][0] * (this.pathWidth + this.wallWidth) + offset,
+          this.route[this.route.length - 1][1] * (this.pathWidth + this.wallWidth) + offset
         );
         timer = setTimeout(this.loop.bind(this), this.delay);
       }
@@ -124,7 +124,7 @@ var MazeWorldModel = {
     this.route.push([direction[0] + x, direction[1] + y]);
 
   	// Draw the new step
-    ctx.lineTo(    (direction[0] + x) * (this.pathWidth + this.wall) + offset, (direction[1] + y) * ( this.pathWidth +  this.wall) + offset );
+    ctx.lineTo(    (direction[0] + x) * (this.pathWidth + this.wallWidth) + offset, (direction[1] + y) * ( this.pathWidth +  this.wallWidth) + offset );
 
   	// Assign the map as visited
   	var x1 = (direction[1] + y) * 2;
@@ -142,7 +142,11 @@ var MazeWorldModel = {
 
   CanMove : function (x, y)
   {
-      return (y>=0) && (y<this.map.length) && (x >= 0) && (x < this.map[y].length) && (this.board[y][x] != 1);
+    var notOffEdge = (y>=0) && (y<this.map.length) && (x >= 0) && (x < this.map[y].length);
+    var notBlocked = (this.map[y][x] == true);
+    if (!notBlocked)
+      console.log("Blocked at (",x,",",y,")");
+    return  notOffEdge && notBlocked;
   },
 
   GetBoardLength: function()
@@ -155,17 +159,48 @@ var MazeWorldModel = {
       return  this.map[1].length;
   },
   GetPlayerX: function()
-    {
-        return  this.player.x;
-    },
-    GetPlayerY: function()
-      {
-          return  this.player.y;
-      },
+  {
+    return  this.player.x;
+  },
+  GetPlayerY: function()
+  {
+      return  this.player.y;
+  },
 
 
   Filled: function(x,y)
   {
-    return this.board[y][x];
-  }
+    return this.board[x][y];
+  },
+
+
+
+
+  //Check to see if the new space is inside the board and not a wall
+
+
+  KeyUp: function(e)
+  {
+      if((e.which == 38) && this.CanMove(this.player.x, this.player.y-1))//Up arrow
+      {
+        this.player.y-=2;
+      }
+      else if((e.which == 40) &&  this.CanMove(this.player.x, this.player.y+1)) // down arrow
+      {
+        this.player.y+=2;
+      }
+      else if((e.which == 37) &&  this.CanMove(this.player.x-1, this.player.y))
+      {
+        this.player.x-=2;
+      }
+      else if((e.which == 39) &&  this.CanMove(this.player.x+1, this.player.y))// right?
+      {
+        this.player.x+=2;
+      }
+      e.preventDefault();
+      ConsolePrintMap();
+
+  },
+
+
 }

@@ -19,7 +19,6 @@
    style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
 </div>
 <script type="text/javascript" src="js/MazeWorldModel.js"></script>
-<script type= "text/javascript" src="js/game.js"></script>
 <script type= "text/javascript" src="js/Renderer.js"></script>
 
 	  <ul>
@@ -53,16 +52,22 @@ blockPercentage = function(percentage)
 
 ConsolePrintMap = function()
 {
+	console.log("Player at ", MazeWorldModel.player.x, ",",MazeWorldModel.player.y);
 	var row = "";
 	console.log("Map size is ", width, "X",height);
 	for (var i = 0; i < height * 2; i++)
 	{
 		for (var j = 0; j < width * 2; j++)
 		{
-			if (MazeWorldModel.map[i][j] === true)
-			  row = row.concat(" ");
+			if (MazeWorldModel.player.x == j && MazeWorldModel.player.y == i)
+				row = row.concat("X");
 			else
-				row = row.concat("#");
+			{
+				if (MazeWorldModel.map[i][j] === true)
+				  row = row.concat(".");
+				else
+					row = row.concat("#");
+				}
 		}
 		console.log(row);
 		row= "";
@@ -89,7 +94,7 @@ settings =
     inputWidth.value = MazeWorldModel.width;
     inputHeight.value = MazeWorldModel.height;
     inputPathWidth.value = MazeWorldModel.pathWidth;
-    inputWallWidth.value = MazeWorldModel.wall;
+    inputWallWidth.value = MazeWorldModel.wallWidth;
     inputOuterWidth.value = MazeWorldModel.outerWall;
     inputPathColor.value = MazeWorldModel.pathColor;
     inputWallColor.value = MazeWorldModel.wallColor;
@@ -100,7 +105,7 @@ settings =
     if ( inputWidth.value != width ||
       inputHeight.value != height ||
       inputPathWidth.value != pathWidth ||
-      inputWallWidth.value != wall ||
+      inputWallWidth.value != wallWidth ||
       inputOuterWidth.value != outerWall ||
       inputPathColor.value != pathColor ||
       inputWallColor.value != wallColor ||
@@ -115,7 +120,7 @@ settings =
     width = parseFloat(inputWidth.value);
     height = parseFloat(inputHeight.value);
     pathWidth = parseFloat(inputPathWidth.value);
-    wall = parseFloat(inputWallWidth.value);
+    wallWidth = parseFloat(inputWallWidth.value);
     outerWall = parseFloat(inputOuterWidth.value);
     pathColor = inputPathColor.value;
     wallColor = inputWallColor.value;
@@ -143,14 +148,40 @@ setInterval(settings.check, 400);
 // --------------------------------------------------------
 //
 
+	UpdateBuyButton = function(e)
+	{
+
+		if (typeof SetupBuyButton !== "undefined")
+			SetupBuyButton(this.player.x,this.player.y);
+		e.preventDefault();
+	};
+
+
+function drawplayer(ctx)
+{
+
+ var blocksize =(MazeWorldModel.pathWidth + MazeWorldModel.wallWidth);
+  ctx.beginPath();
+  var half = this.pathWidth/2;
+	ctx.fillStyle = "Green";
+	offset = this.pathWidth / 2 + this.outerWall;
+
+	xpos = 0.5*MazeWorldModel.GetPlayerX() * blocksize+ offset;
+	ypos = 0.5*MazeWorldModel.GetPlayerY() * blocksize+ offset;
+	ctx.arc(xpos,ypos, half, 0, 2*Math.PI);
+	ctx.fill();
+
+
+}
+var el = function(id){ return document.querySelector(id); };
 //Draw the game board
 function draw(wm)
 {
 		var canvas = document.getElementById("movingcanvas");
 		var width = canvas.width;
 
-		var boardlength = wm.GetBoardLength();
-		var boardwidith = wm.GetBoardWidth();
+		var boardlength = MazeWorldModel.GetBoardLength();
+		var boardwidith = MazeWorldModel.GetBoardWidth();
 
 		var blockSize = width/ boardlength;
 		var ctx = canvas.getContext('2d');
@@ -159,21 +190,12 @@ function draw(wm)
 		ctx.fillStyle="white";
 
     //Draw the player
-    ctx.beginPath();
-    var half = blockSize/2;
-    ctx.fillStyle = "blue";
-    ctx.arc(wm.GetPlayerX()*blockSize+half,wm.GetPlayerY()*blockSize+half, half, 0, 2*Math.PI);
-    if (el('#R_X') != null )
-      el('#R_X').innerHTML ="0";
-    if (el('#R_Y') != null )
-      el('#R_Y').innerHTML ="0";
-    if (el('#L_X') != null )
-      el('#L_X').innerHTML = wm.player.x;
-    if (el('#L_Y') != null )
-      el('#L_Y').innerHTML = wm.player.y;
-    ctx.fill();
-}
+		drawplayer(ctx);
 
+}
+document.addEventListener("keyup",MazeWorldModel.KeyUp.bind(MazeWorldModel));
+document.addEventListener("keyup",UpdateBuyButton);
+document.addEventListener("keyup",draw);
 
 </script>
 
