@@ -1,41 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<title></title>
-	<meta name="keywords" content="" />
-	<meta name="description" content="" />
-	<link href="css/MazeGen.css" rel="stylesheet">
-
-</head>
-
-<body>
-	<div>
-
-		<div style="position: relative;">
- <canvas id="mazecanvas" width="640" height="480"
-   style="position: absolute; top: 0; z-index: 0;"></canvas>
- <canvas id="movingcanvas" width="640" height="480"
-   style="position: absolute;  top: 0; z-index: 1;"></canvas>
-</div>
-<script type="text/javascript" src="js/MazeWorldModel.js"></script>
-
-	  <ul>
-	    <li><label>Width:</label><input id=width type="text"/></li>
-	    <li><label>Height:</label><input id=height type="text"/></li>
-	    <li><label>Path Width:</label><input id=pathwidth type="text"/></li>
-	    <li><label>Wall Width:</label><input id=wallwidth type="text"/></li>
-	    <li><label>Outer Width:</label><input id=outerwidth type="text"/></li>
-	    <li><label>Path Color:</label><input id=pathcolor type="text"/></li>
-	    <li><label>Wall Color:</label><input id=wallcolor type="text"/></li>
-	    <li><label>Seed:</label><input id=seed type="text"/></li>
-	    <li><input id=randomseed type="button" value="Random Seed"/></li>
-	  </ul>
-	</div>
-
-<script type="text/javascript">
 MazeWorldModel.init();
-
 
 blockPercentage = function(percentage)
 {
@@ -151,7 +114,7 @@ setInterval(settings.check, 400);
 	{
 
 		if (typeof SetupBuyButton !== "undefined")
-			SetupBuyButton(this.player.x,this.player.y);
+			SetupBuyButton(MazeWorldModel.player.x,MazeWorldModel.player.y);
 		e.preventDefault();
 	};
 
@@ -195,9 +158,3 @@ function draw(wm)
 document.addEventListener("keyup",MazeWorldModel.KeyUp.bind(MazeWorldModel));
 document.addEventListener("keyup",UpdateBuyButton);
 document.addEventListener("keyup",draw);
-
-</script>
-
-
-
-</body>

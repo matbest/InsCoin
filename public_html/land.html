@@ -1,201 +1,86 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script><![endif]-->
-	<title></title>
-	<meta name="keywords" content="" />
-	<meta name="description" content="" />
-	<link href="css/pagestyle.css" rel="stylesheet">
-	<link href="css/gamestyle.css" rel="stylesheet">
-  <link href="css/tablestyle.css" rel="stylesheet">
 
+<!DOCTYPE html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+<link rel="stylesheet" type="text/css" href="css/PageLayout.css">
+<link href="css/tablestyle.css" rel="stylesheet">
+<link href="css/MazeGen.css" rel="stylesheet">
+
+<title>Page Title</title>
+<meta name="description" content="Write some words to describe your html page">
 </head>
 
-<script type="text/javascript">
-    function loadCanvas(id) {
-        var canvas = document.createElement('canvas'),
-        div = document.getElementById(id);
-				canvas.id     = "movingcanvas";
-				canvas.width  = 400;
-				canvas.height = 400;
-				canvas.style.zIndex   = 8;
-				canvas.border= "#FF0000"
-				canvas.lineWidth = 2;
-				canvas.strokeStyle="#FF0000";
-				canvas.padding="5px";
-				canvas.marginLeft= "auto";
-				canvas.marginRight="auto";
-
-				canvas.style.position = "absolute";
-				canvas.style.border   = "2px solid red";
-        div.appendChild(canvas);
-    }
-
-		/* ... */
-		 function LoadContent()
-		 {
-    	loadCanvas("contentDiv");
-		 }
-
-</script>
-
-  <script type="text/javascript">
-    function loadScript(url, callback)
-    {
-      // Adding the script tag to the head as suggested before
-      var head = document.getElementsByTagName('head')[0];
-      var script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = url;
-
-      // Then bind the event to the callback function.
-      // There are several events for cross browser compatibility.
-      script.onreadystatechange = callback;
-      script.onload = callback;
-
-      // Fire the loading
-      document.head.appendChild(script);
-    }
-
-    var doneLoading = function()
-    {
-        console.log("ETHInteractions loaded");
-    };
-
-    loadScript("js/ETHinteractions.js", doneLoading);
-    loadScript("js/game.js", doneLoading);
-  </script>
-
+<script type="text/javascript" src="js/MazeWorldModel.js"></script>
 <script type= "text/javascript" src="js/ContractABI.js"></script>
-//<script type="text/javascript" src="js/WorldModel.js"></script>
-<script type= "text/javascript" src="js/game.js"></script>
- <script type="text/javascript" src="js/Renderer.js"></script>
-<script type="text/javascript">
-
-var assert = function(condition, message) {
-    if (!condition)
-        throw Error("Assert failed" + (typeof message !== "undefined" ? ": " + message : ""));
-};
-
-assert(1===1);
-
-function isNum(data)
-{/*
-  if (typeof(data !==  “number”))
-  return false;
-	return !isNaN(parseFloat(data)) && typeof data !== 'string';
-  */
-  return !isNaN(data);
-}
-
-function SetBuyButtonStatus(st)
-{
-    document.getElementById("BuyButton").disabled = !st;
-    console.log("Setting buy button status to ", st);
-}
-
-function SetupBuyButton(x,y)
-{
-  console.log("Testing to see if location ", x,y, "is free");
-  if (isAvailable(x,y,SetBuyButtonStatus));
-  GetPlotPrice(function(a){
-    document.getElementById("BuyButton").innerHTML = "Buy (" + a + " Eth)";
-  });
-}
-function myBuyFunction( )
-{
-  var x = player.x;
-  var y = player.y;
-  if(!isNum(x))
-    console.error('X -oops not a number');
-  if(!isNum(y))
-    console.error('y -oops not a number');
-
-  console.log("Buying ",x ,", ", y );
-  isAvailable(x,y,MintPlot(x,y));
-  console.log("Buy End!");
-
-}
-function GetPriceforNewPlot()
-{
-
-}
-function GetPriceforSaving()
-{
-
-}
-
-function mySaveFunction()
-{
-    console.log("Save!");
-}
-</script>
+<script type="text/javascript" src="js/Renderer.js"></script>
+<script type= "text/javascript" src="js/ETHinteractions.js"></script>
+<script type="text/javascript" src="js/EthereumButtons.js"></script>
 
 <body>
-
-<div class="wrapper">
-
+<div class="blended_grid">
+<div class="pageHeader">
 	<header class="header">
 		<strong>Welcome to Dapp Land</strong>
 	</header><!-- .header-->
 
-	<div class="middle">
+</div>
+<div class="pageContent">
+	<canvas id="mazecanvas" width="640" height="480" style=" position: absolute; left: 100; top: 0; z-index: 0;"></canvas>
+	<canvas id="movingcanvas" width="640" height="480" style=" position: absolute; left: 100; top: 0; z-index: 1;"></canvas>
+	<script type="text/javascript" src="js/MazeWorldModel.js"></script>
 
-		<div class="container" id="contentDiv" >
-			<script type="text/javascript">
-   			LoadContent();
-				draw(WorldModel);
-			</script>
-			<main class="content">
-				<strong>Content:</strong>
-      	</main><!-- .content -->
-		</div><!-- .container-->
+</div>
+<div class="pageRightMenu">
 
-		<aside class="right-sidebar">
-			<strong>Right Sidebar:</strong>
-					<div class="divTable darkTable">
-					<div class="divTableHeading">
-					<div class="divTableRow">
-					<div class="divTableHead"></div>
-					<div class="divTableHead">X Position</div>
-					<div class="divTableHead">Y Position</div>
-					<div class="divTableHead"></div>
-					</div>
-					</div>
-					<div class="divTableBody">
-					<div class="divTableRow">
-					<div class="divTableCell">Region</div>
-					<div class="divTableCell"  id="R_X">0</div>
-					<div class="divTableCell" id="R_Y">0</div>
-					<div class="divTableCell">
-					  <button type="button" id="BuyButton" onclick="myBuyFunction()">Buy</button><br>
-					  <button type="button" onclick="mySaveFunction()" >Save</button>
-					</div></div>
-					<div class="divTableRow">
-					<div class="divTableCell">Local</div><div class="divTableCell" id="L_X">0</div>
-					<div class="divTableCell" id="L_Y">0</div><div class="divTableCell">
-					  <button type="button">Set</button></div></div>
-					</div>
-
-					</div>
-					</div>
-					</div>
-					</div>
-		</aside><!-- .right-sidebar -->
-
-	</div><!-- .middle-->
-
-	<footer class="footer">
-		<div w3-include-html="EthTable.html"></div>
-		<strong>Footer:</strong> Mus elit Morbi mus enim lacus at quis Nam eget morbi. Et semper urna urna non at cursus dolor vestibulum neque enim. Tellus interdum at laoreet laoreet lacinia lacinia sed Quisque justo quis. Hendrerit scelerisque lorem elit orci tempor tincidunt enim Phasellus dignissim tincidunt. Nunc vel et Sed nisl Vestibulum odio montes Aliquam volutpat pellentesque. Ut pede sagittis et quis nunc gravida porttitor ligula.
+	<strong>Right Sidebar:</strong>
+			<div class="divTable darkTable">
+			<div class="divTableHeading">
+			<div class="divTableRow">
+			<div class="divTableHead"></div>
+			<div class="divTableHead">X Position</div>
+			<div class="divTableHead">Y Position</div>
+			<div class="divTableHead"></div>
+			</div>
+			</div>
+			<div class="divTableBody">
+			<div class="divTableRow">
+			<div class="divTableCell">Region</div>
+			<div class="divTableCell"  id="R_X">0</div>
+			<div class="divTableCell" id="R_Y">0</div>
+			<div class="divTableCell">
+				<button type="button" id="BuyButton" onclick="myBuyFunction()">Buy</button><br>
+				<button type="button" onclick="mySaveFunction()" >Save</button>
+			</div></div>
+			<div class="divTableRow">
+			<div class="divTableCell">Local</div><div class="divTableCell" id="L_X">0</div>
+			<div class="divTableCell" id="L_Y">0</div><div class="divTableCell">
+				<button type="button">Set</button></div></div>
+			</div>
 
 
 
-	</footer><!-- .footer -->
+								</div>
+								<ul>
+									<li><label>Width:</label><input id=width type="text"/></li>
+									<li><label>Height:</label><input id=height type="text"/></li>
+									<li><label>Path Width:</label><input id=pathwidth type="text"/></li>
+									<li><label>Wall Width:</label><input id=wallwidth type="text"/></li>
+									<li><label>Outer Width:</label><input id=outerwidth type="text"/></li>
+									<li><label>Path Color:</label><input id=pathcolor type="text"/></li>
+									<li><label>Wall Color:</label><input id=wallcolor type="text"/></li>
+									<li><label>Seed:</label><input id=seed type="text"/></li>
+									<li><input id=randomseed type="button" value="Random Seed"/></li>
+								</ul>
+								</div>
 
-</div><!-- .wrapper -->
+</div>
+<div class="pageFooter">
+</div>
+</div>
+</body>
 
-
+	<script type="text/javascript" src="js/MazeMain.js"></script>
 </body>
 </html>
