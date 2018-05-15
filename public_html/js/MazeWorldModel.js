@@ -1,23 +1,24 @@
 
-//Setup the empty map and the route start
 
-
+//--
+// This holds the world model with the maze in interval
 var MazeWorldModel = {
   pathWidth : 10, //Width of the Maze Path
   wallWidth: 2, //Width of the Walls between Paths
   outerWall : 2, //Width of the Outer most wall
-  width : 25, //Number paths fitted horisontally
-  height : 25, //Number paths fitted vertically
+  width : 49, //Number paths fitted horisontally
+  height : 49, //Number paths fitted vertically
   delay : 0.1, //Delay between algorithm cycles
-  xStart : 5, //Horisontal starting position
-  yStart : 5, //Vertical starting position
+  xStart : 0, //Horisontal starting position
+  yStart : 0, //Vertical starting position
   seed : (Math.random() * 100000) | 0, //Seed for random numbers
   wallColor : "#d24", //Color of the walls
   pathColor : "#222a33", //Color of the path
 
   map : [],
   route: [],
-   player: {
+
+  player: {
       x: 0,
       y: 0
   },
@@ -32,6 +33,47 @@ var MazeWorldModel = {
   		}
   	}
   },
+  blockPercentage : function(percentage)
+  {
+  	for (var i = 0; i < this.height * 2; i++)
+  	{
+  		for (var j = 0; j < this.width * 2; j++)
+  		{
+  			var random_boolean = Math.random() >= 1-percentage;
+        if (random_boolean)
+  			   this.map[i][j] = random_boolean;
+  		}
+  	}
+  },
+  BlockCircle : function(centerX, centerY, radius,value)
+  {
+  	for (var i = 0; i < this.height * 2; i++)
+  	{
+  		for (var j = 0; j < this.width * 2; j++)
+  		{
+        if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) > radius*radius)
+        {
+  			   this.map[i][j] = value;
+       }
+  		}
+  	}
+  },
+
+  UnBlockCircle : function(centerX, centerY, radius)
+  {
+    var percentage = 0.5;
+    for (var i = 0; i < this.height * 2; i++)
+    {
+      this.map[i] = [];
+      for (var j = 0; j < this.width * 2; j++)
+      {
+      //  this.map[i][j] = false;
+        var random_boolean = Math.random() >= 1-percentage;
+  			map[i][j] = random_boolean;
+      }
+    }
+  },
+
   randomGen : function(seed)
   {
     if (seed === undefined) var seed = performance.now();
@@ -55,14 +97,17 @@ var MazeWorldModel = {
     ctx.lineWidth = this.pathWidth;
     ctx.beginPath();
 
-    // Build empth Map
+    // Build empty Map
     random = this.randomGen(seed);
   	offset = this.pathWidth / 2 + this.outerWall;
   	this.AllocateMap();
-  	if(0)	blockPercentage(.1);
+  	if(0)	this.blockPercentage(.1);
+    ConsolePrintMap();
+    if(1) this.BlockCircle(40,40,20,true);
+    ConsolePrintMap();
 
-  	this.xStart = (this.width / 2) | 0; //Horisontal starting position
-  	this.yStart = (this.height / 2) | 0; //Vertical starting position
+    this.xStart =20;// = (this.width / 2) | 0; //Horisontal starting position
+  	this.yStart  = 20;//= (this.height / 2) | 0; //Vertical starting position
 
   	//route starts here.
     this.map[this.yStart * 2][this.xStart * 2] = true;
@@ -112,8 +157,16 @@ var MazeWorldModel = {
         );
         timer = setTimeout(this.loop.bind(this), this.delay);
       }
-  		else {
+  		else
+      {
+        //done
+        console.log("Done");
+        console.log("unsetting");
   			ConsolePrintMap();
+        //if(1) this.BlockCircle(40,40,20,false);
+        console.log("unset");
+	       ConsolePrintMap();
+
   		}
 
       return;
@@ -148,7 +201,7 @@ var MazeWorldModel = {
     var notOffEdge = (y>=0) && (y<this.map.length) && (x >= 0) && (x < this.map[y].length);
     if (notOffEdge)
     {
-    
+
       if (this.map[y][x] == true)
       {
         return true;

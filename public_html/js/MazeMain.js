@@ -1,16 +1,3 @@
-MazeWorldModel.init();
-
-blockPercentage = function(percentage)
-{
-	for (var i = 0; i < height * 2; i++)
-	{
-		for (var j = 0; j < width * 2; j++)
-		{
-			var random_boolean = Math.random() >= 1-percentage;
-			map[i][j] = random_boolean;
-		}
-	}
-}
 
 ConsolePrintMap = function()
 {
@@ -26,15 +13,19 @@ ConsolePrintMap = function()
 			else
 			{
 				if (MazeWorldModel.map[i][j] === true)
-				  row = row.concat(".");
+				  row = row.concat("1");
 				else
-					row = row.concat("#");
+					row = row.concat("0");
 				}
 		}
 		console.log(row);
 		row= "";
 	}
 }
+
+MazeWorldModel.init();
+
+
 
 
 
@@ -78,7 +69,7 @@ settings =
   },
   update: function()
 	{
-    clearTimeout(timer);
+  //  clearTimeout(timer);
     width = parseFloat(inputWidth.value);
     height = parseFloat(inputHeight.value);
     pathWidth = parseFloat(inputPathWidth.value);
@@ -101,7 +92,7 @@ buttonRandomSeed.addEventListener("click", function()
 
 
 settings.display();
-MazeWorldModel.loop();
+//MazeWorldModel.loop();
 
 setInterval(settings.check, 400);
 
