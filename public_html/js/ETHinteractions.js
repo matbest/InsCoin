@@ -43,7 +43,7 @@ function GetNetworkVersion()
 }
 var contractAddresses = {
     'Ganache': '0xbfadb3e0db6e18c19abcabff493e02ebf7e2c772',
-    'Ropsten': '0xa208d316a9dbea6885e36a8254ca19f644d51444'
+    'Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'
 };
 
 var EthereumConnection = {
@@ -65,6 +65,9 @@ var EthereumConnection = {
     var plotContract = this.loadContract(contractAddress, ContractABI);
     if (plotContract != 'undefined')
       this.connected = true;
+    else {
+      console.error();
+    }
     return plotContract;
   },
 
@@ -141,7 +144,7 @@ function isAvailable(x,y,func)
 {
 
   var plotContract =EthereumConnection.GetContract();
-  var activeAccount = GetAccountAddress();
+//  var activeAccount = GetAccountAddress();
   var available = false;
   plotContract.LocationAssigned(x,y,function(err, res){
     if (err)
