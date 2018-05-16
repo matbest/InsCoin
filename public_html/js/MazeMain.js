@@ -24,7 +24,8 @@ ConsolePrintMap = function()
 }
 
 MazeWorldModel.init();
-
+EthereumConnection.init();
+SetupBuyButton(0,0);
 
 
 
@@ -103,10 +104,16 @@ setInterval(settings.check, 400);
 
 	UpdateBuyButton = function(e)
 	{
-
-		if (typeof SetupBuyButton !== "undefined")
-			SetupBuyButton(MazeWorldModel.player.x,MazeWorldModel.player.y);
+		if (EthereumConnection.connected)
+		{
+			if (typeof SetupBuyButton !== "undefined")
+				SetupBuyButton(MazeWorldModel.player.x,MazeWorldModel.player.y);
+		}
+		else {
+			console.log("Ethereum not connected");
+		}
 		e.preventDefault();
+
 	};
 
 
