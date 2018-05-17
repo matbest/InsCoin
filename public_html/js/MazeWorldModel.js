@@ -236,7 +236,7 @@ var MazeWorldModel = {
     ctx.fillStyle = "Green";
     ctx.arc(this.convertGridToPos(this.GetPlayerX()),this.convertGridToPos(this.GetPlayerY()), half, 0, 2*Math.PI);
     ctx.fill();
-    ctx.endPath();
+  
   },
 
   convertGridToPos: function(grid)
