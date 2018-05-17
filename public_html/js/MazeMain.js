@@ -4,8 +4,12 @@ ConsolePrintMap = function()
 	console.log("Player at ", MazeWorldModel.player.x, ",",MazeWorldModel.player.y);
 	var row = "";
 	console.log("Map size is ", width, "X",height);
+	console.log("0 = blocked, 1 = traversable");
+
+	//Evens are the spaces, odds are the walls.
 	for (var i = 0; i < height * 2; i++)
 	{
+		row = row.concat(i);
 		for (var j = 0; j < width * 2; j++)
 		{
 			if (MazeWorldModel.player.x == j && MazeWorldModel.player.y == i)
@@ -13,9 +17,16 @@ ConsolePrintMap = function()
 			else
 			{
 				if (MazeWorldModel.map[i][j] === true)
-				  row = row.concat("1");
+				  if((i%2 == 1) ||( j %2 == 1 ))
+					{
+						row = row.concat(","); // traversable wall
+					}
+					else
+					{
+						row = row.concat("."); // Free space
+					}
 				else
-					row = row.concat("0");
+					row = row.concat("#"); // blocked wall
 				}
 		}
 		console.log(row);
@@ -26,10 +37,6 @@ ConsolePrintMap = function()
 MazeWorldModel.init();
 EthereumConnection.init();
 SetupBuyButton(0,0);
-
-
-
-
 
 inputWidth = document.getElementById("width");
 inputHeight = document.getElementById("height");
@@ -117,22 +124,7 @@ setInterval(settings.check, 400);
 	};
 
 
-function drawplayer(ctx)
-{
 
- var blocksize =(MazeWorldModel.pathWidth + MazeWorldModel.wallWidth);
-  ctx.beginPath();
-  var half = this.pathWidth/2;
-	ctx.fillStyle = "Green";
-	offset = this.pathWidth / 2 + this.outerWall;
-
-	xpos = 0.5*MazeWorldModel.GetPlayerX() * blocksize+ offset;
-	ypos = 0.5*MazeWorldModel.GetPlayerY() * blocksize+ offset;
-	ctx.arc(xpos,ypos, half, 0, 2*Math.PI);
-	ctx.fill();
-
-
-}
 var el = function(id){ return document.querySelector(id); };
 //Draw the game board
 function draw(wm)
@@ -150,7 +142,7 @@ function draw(wm)
 		ctx.fillStyle="white";
 
     //Draw the player
-		drawplayer(ctx);
+		MazeWorldModel.drawplayer(ctx);
 
 }
 document.addEventListener("keyup",MazeWorldModel.KeyUp.bind(MazeWorldModel));

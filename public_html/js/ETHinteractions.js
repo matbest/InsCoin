@@ -1,4 +1,4 @@
-ignoreMetamask = true;
+ignoreMetamask = false;
 
 /**
  * find out what network we are connected to
