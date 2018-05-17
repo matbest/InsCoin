@@ -4,7 +4,7 @@ ConsolePrintMap = function()
 	console.log("Player at ", MazeWorldModel.player.x, ",",MazeWorldModel.player.y);
 	var row = "";
 	console.log("Map size is ", width, "X",height);
-	console.log("0 = blocked, 1 = traversable");
+	console.log(" #  = blocked, , = traversable, . = free space");
 
 	//Evens are the spaces, odds are the walls.
 	for (var i = 0; i < height * 2; i++)

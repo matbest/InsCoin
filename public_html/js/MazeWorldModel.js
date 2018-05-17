@@ -8,7 +8,7 @@ var MazeWorldModel = {
   outerWall : 2, //Width of the Outer most wall
   width : 20, //Number paths fitted horisontally
   height : 20, //Number paths fitted vertically
-  delay : 0.1, //Delay between algorithm cycles
+  delay : 1, //Delay between algorithm cycles
   xStart : 0, //Horisontal starting position
   yStart : 0, //Vertical starting position
   seed : (Math.random() * 100000) | 0, //Seed for random numbers
@@ -45,64 +45,51 @@ var MazeWorldModel = {
   		}
   	}
   },
-  BlockCircle : function(centerX, centerY, radius,value, colour)
+  BlockCircle : function(centerX, centerY, radius,value, colour, draw)
   {
   	for (var i = 0; i < this.height * 2; i++)
   	{
   		for (var j = 0; j < this.width * 2; j++)
   		{
-        if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) > radius*radius)
+        if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
         {
-          this.FillSquare(i,j, colour);
+
   			   this.map[i][j] = value;
        }
-       else {
-         //this.FillSquare(i,j, colour);
+       else
+       {
+         if (1)
+         if (draw)
+          if ((i%2 != 1 ) && (j%2 !=1 ))
+            this.FillSquare(i/2,j/2, colour);
        }
   		}
   	}
+        ctx.closePath();
   },
 
-
+ count : 0,
   FillSquare : function(x,y,colour)
   {
-    offset = this.pathWidth / 4 + this.outerWall/2;
-    //offset /=2.0;
+
+    console.log("Filling Square",this.count++,x,y,colour);
 
     ctx.beginPath();
-    ctx.lineWidth="1";
+    ctx.lineWidth="0";
     ctx.strokeStyle=colour;
-    var blocksize = 0.5* (this.pathWidth + this.wallWidth*2);
-    var x1 = x * blocksize ;//+ offset ;
-    var y1 = y * blocksize;// + offset;
+
+    var blocksize = this.pathWidth -this.wallWidth*2;
+    var x1 = this.convertGridToPos(x)- blocksize/2;
+    var y1 = this.convertGridToPos(y)-  blocksize/2;
     var x2 = blocksize;
-    var y2=  blocksize;
+    var y2 = blocksize;
     ctx.rect(x1,y1,x2,y2);
     ctx.stroke();
-/*
-    ctx.moveTo(0.5*x* (this.pathWidth + this.wallWidth) +offset,
-            0.5*y* (this.pathWidth + this.wallWidth)  +offset)
-            ctx.lineTo(0.5*(x+1)* (this.pathWidth + this.wallWidth)  +offset,
-                    0.5*(y+1)* (this.pathWidth + this.wallWidth)  +offset)
-            ctx.stroke();
-            */
-  },
+    ctx.closePath();
 
 
-  UnBlockCircle : function(centerX, centerY, radius)
-  {
-    var percentage = 0.5;
-    for (var i = 0; i < this.height * 2; i++)
-    {
-      this.map[i] = [];
-      for (var j = 0; j < this.width * 2; j++)
-      {
-      //  this.map[i][j] = false;
-        var random_boolean = Math.random() >= 1-percentage;
-  			map[i][j] = random_boolean;
-      }
-    }
   },
+
 
   randomGen : function(seed)
   {
@@ -114,6 +101,7 @@ var MazeWorldModel = {
   },
   init : function()
   {
+
   	var canvas = document.getElementById("mazecanvas");
     //canvas = document.querySelector("canvas");
     ctx = canvas.getContext("2d");
@@ -134,9 +122,13 @@ var MazeWorldModel = {
   	this.AllocateMap();
   	if(0)	this.blockPercentage(.1);
     ConsolePrintMap();
-    if(0) this.BlockCircle(10,10,4,true,'blue');
-    ConsolePrintMap();
 
+    if(1) this.BlockCircle(15,15,7,true,'blue',true);
+    ctx.beginPath();
+
+    ConsolePrintMap();
+    ctx.strokeStyle='black';
+    ctx.stroke();
 
     this.xStart = 5;// = (this.width / 2) | 0; //Horisontal starting position
   	this.yStart = 5;//= (this.height / 2) | 0; //Vertical starting position
@@ -148,16 +140,20 @@ var MazeWorldModel = {
     this.route = [[this.xStart, this.yStart]];
 
   	//Start Drawing
+
+
     ctx.moveTo(
       this.convertGridToPos(this.xStart),
       this.convertGridToPos(this.yStart));
-
-    //  this.xStart * (this.pathWidth + this.wallWidth) + offset,
-    //  this.yStart * (this.pathWidth + this.wallWidth) + offset);
+      ctx.stroke();
   },
 
   loop : function()
   {
+      ctx.strokeStyle='black';
+    ctx.stroke();
+    console.log("thinking");
+
   	routelength = this.route.length;
 
     x = this.route[routelength - 1][0] | 0; // |0 means cast to an int
@@ -188,28 +184,25 @@ var MazeWorldModel = {
   		// If there is still a route
       if (this.route.length > 0)
   		{
-              ctx.strokeStyle='black';
-        ctx.moveTo(
-          //this.route[this.route.length - 1][0] * (this.pathWidth + this.wallWidth) + offset,
-          //   this.route[this.route.length - 1][1] * (this.pathWidth + this.wallWidth) + offset
-          this.convertGridToPos(this.route[this.route.length - 1][0]),
-        this.convertGridToPos(this.route[this.route.length - 1][1])
-        );
-        timer = setTimeout(this.loop.bind(this), this.delay);
-      }
+          ctx.strokeStyle='black';
+          ctx.moveTo(
+            this.convertGridToPos(this.route[this.route.length - 1][0]),
+            this.convertGridToPos(this.route[this.route.length - 1][1]));
+            ctx.stroke();
+      //  timer = setTimeout(this.loop.bind(this), this.delay);
+      this.loop();
+    }
   		else
       {
         //done
         console.log("Done");
         console.log("unsetting");
   			ConsolePrintMap();
-        //if(1) this.BlockCircle(40,40,20,false);
-
-        console.log("unset");
-	       ConsolePrintMap();
-
+        if(1)
+          this.BlockCircle(15,15,7,true,'blue',false);
+          console.log("unset");
+	      ConsolePrintMap();
   		}
-
       return;
     }
 
@@ -218,8 +211,11 @@ var MazeWorldModel = {
     this.route.push([direction[0] + x, direction[1] + y]);
 
   	// Draw the new step
-    ctx.lineTo(    (direction[0] + x) * (this.pathWidth + this.wallWidth) + offset, (direction[1] + y) * ( this.pathWidth +  this.wallWidth) + offset );
-
+  //  ctx.lineTo(   (direction[0] + x) * (this.pathWidth + this.wallWidth) + offset,
+  //                (direction[1] + y) * ( this.pathWidth +  this.wallWidth) + offset );
+   ctx.strokeStyle='black';
+   ctx.lineTo(  this.convertGridToPos(direction[0] + x),this.convertGridToPos(direction[1] + y));
+  ctx.stroke();
   	// Assign the map as visited
   	var x1 = (direction[1] + y) * 2;
   	var y1 = (direction[0] + x) * 2;
@@ -228,26 +224,21 @@ var MazeWorldModel = {
     this.map[x1][y1] = true;
     this.map[x2][y2] = true;
 
-  	ctx.stroke();
-    timer = setTimeout(this.loop.bind(this), this.delay);
-  },
-   drawplayer:function(ctx)
-  {
 
-   var blocksize =(MazeWorldModel.pathWidth + MazeWorldModel.wallWidth);
+  //  timer = setTimeout(this.loop.bind(this), this.delay);
+    this.loop();
+  },
+
+  drawplayer:function(ctx)
+  {
     ctx.beginPath();
     var half = this.pathWidth/2;
-  	ctx.fillStyle = "Green";
-  //	offset = this.pathWidth / 2 + this.outerWall;
-
-  	xpos = 0.5*MazeWorldModel.GetPlayerX() * blocksize;//+ offset;
-  	ypos = 0.5*MazeWorldModel.GetPlayerY() * blocksize;//+ offset;
-  //	ctx.arc(xpos,ypos, half, 0, 2*Math.PI);
-  ctx.arc(this.convertGridToPos(this.GetPlayerX()),this.convertGridToPos(this.GetPlayerY()), half, 0, 2*Math.PI);
-  ctx.fill();
-
-
+    ctx.fillStyle = "Green";
+    ctx.arc(this.convertGridToPos(this.GetPlayerX()),this.convertGridToPos(this.GetPlayerY()), half, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.endPath();
   },
+
   convertGridToPos: function(grid)
   {
     offset = this.pathWidth / 2 + this.outerWall;
