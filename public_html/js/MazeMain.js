@@ -20,15 +20,20 @@ ConsolePrintMap = function()
 				if (MazeWorldModel.map[i][j] === true)
 				  if((i%2 == 1) ||( j %2 == 1 ))
 					{
-						row = row.concat(","); // traversable wall
+						row = row.concat("1"); // traversable wall
+					//	row = row.concat(","); // traversable wall
 					}
 					else
 					{
-						row = row.concat("."); // Free space
+						row = row.concat("1");
+						//row = row.concat("."); // Free space
 					}
-				else
-					row = row.concat("#"); // blocked wall
+				else{
+
+					row = row.concat("0")
+				//	row = row.concat("#"); // blocked wall
 				}
+			}
 		}
 		console.log(row);
 		row= "";

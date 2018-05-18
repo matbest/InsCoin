@@ -57,12 +57,11 @@ var MazeWorldModel = {
   		{
         if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
         {
-          // if ((i%2 != 1 ) && (j%2 !=1 ))
+          if (this.IsWall(i,j))
   			      this.map[i][j] = value;
        }
        else
        {
-         if (1)
          if (draw)
           if (this.IsWall(i,j))
             this.FillSquare(i/2,j/2, colour,2);
@@ -163,9 +162,6 @@ var MazeWorldModel = {
 
   loop : function()
   {
-
-    console.log("thinking");
-
   	routelength = this.route.length;
 
     x = this.route[routelength - 1][0] | 0; // |0 means cast to an int
@@ -214,7 +210,6 @@ var MazeWorldModel = {
 
           if(1)
           {
-          //  this.BlockCircle(24,24,10,true,'black',true);
             MazeCreator.Finish();
           }
           console.log("unset");
