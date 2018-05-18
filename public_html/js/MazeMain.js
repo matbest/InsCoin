@@ -4,13 +4,16 @@ ConsolePrintMap = function()
 	console.log("Player at ", MazeWorldModel.player.x, ",",MazeWorldModel.player.y);
 	var row = "";
 	console.log("Map size is ", width, "X",height);
-	console.log(" #  = blocked , = traversable wall . = free space");
-	console.log(" True is traversable, false is blocked");
-	console.log("Odd numbers in the arrays are walls, even positions are possible locations to be.")
+	console.log("#  = blocked , = traversable wall . = free space");
+	console.log("True is traversable, false is blocked");
+	console.log("double Odd numbers in the arrays are walls, double even positions are possible locations to be.")
 	//Evens are the spaces, odds are the walls.
 	for (var i = 0; i < height * 2; i++)
 	{
 		row = row.concat(i);
+			row = row.concat(". ");
+		if (i<10)
+			row = row.concat(" ");
 		for (var j = 0; j < width * 2; j++)
 		{
 			if (MazeWorldModel.player.x == j && MazeWorldModel.player.y == i)
@@ -20,18 +23,18 @@ ConsolePrintMap = function()
 				if (MazeWorldModel.map[i][j] === true)
 				  if((i%2 == 1) ||( j %2 == 1 ))
 					{
-						row = row.concat("1"); // traversable wall
-					//	row = row.concat(","); // traversable wall
+						//row = row.concat("1"); // traversable wall
+						row = row.concat(","); // traversable wall
 					}
 					else
 					{
-						row = row.concat("1");
-						//row = row.concat("."); // Free space
+					//	row = row.concat("1");
+						row = row.concat("."); // Free space
 					}
 				else{
 
-					row = row.concat("0")
-				//	row = row.concat("#"); // blocked wall
+				//	row = row.concat("0")
+					row = row.concat("#"); // blocked wall
 				}
 			}
 		}

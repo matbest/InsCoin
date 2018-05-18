@@ -47,7 +47,36 @@ var MazeWorldModel = {
   },
   IsWall: function(x,y)
   {
-    return ((x%2 != 1 ) && (y%2 !=1 ));
+    return ((x%2 != 1 ) || (y%2 !=1 ));
+  },
+  IsPlace: function(x,y)
+  {
+    if  ((x > this.height * 2-1)
+          || (x < 0)
+          || (y > this.width * 2-1)
+          || (y< 0) )
+    	return false;
+    return ((x%2 ==0 ) && (y%2 ==0 ));
+  },
+  SafeSetMap: function(x,y,value)
+  {
+    if (this.IsPlace(x,y))
+      this.map[x][y] = value;
+  },
+  PutWallsAroundPlace: function(x,y)
+  {
+    if (this.IsPlace(x,y))
+    {
+      this.map[x][y] = true;
+      //(False means not traversable)
+      this.SafeSetMap(x-1,y,false);
+      this.SafeSetMap(x+1,y,false);
+      this.SafeSetMap(x,y-1,false);
+      this.SafeSetMap(x,y+1,false);
+    }
+    else {
+      console.error("tried to set an invalid location");
+    }
   },
   BlockCircle : function(centerX, centerY, radius,value, colour, draw)
   {
@@ -55,17 +84,20 @@ var MazeWorldModel = {
   	{
   		for (var j = 0; j < this.width * 2; j++)
   		{
-        if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
+        if (this.IsPlace(i,j))
         {
-          if (this.IsWall(i,j))
-  			      this.map[i][j] = value;
-       }
-       else
-       {
-         if (draw)
-          if (this.IsWall(i,j))
-            this.FillSquare(i/2,j/2, colour,2);
-       }
+          if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
+          {
+            //this.map[i][j] = value;
+            this.PutWallsAroundPlace(i,j);
+          }
+          else
+          {
+
+           if (draw)
+              this.FillSquare(i/2,j/2, colour,2);
+          }
+        }
   		}
   	}
         ctx.closePath();
@@ -74,13 +106,7 @@ var MazeWorldModel = {
  count : 0,
   FillSquare : function(x,y,colour, scale =1 )
   {
-    //scale = (typeof scale !== 'undefined') ?  scale : 1;
     console.log("Filling Square",this.count++,x,y,colour);
-
-    //ctx.beginPath();
-    //ctx.lineWidth="0";
-    //ctx.strokeStyle=colour;
-
     var blocksize = (this.pathWidth -this.wallWidth*2);
     blocksize *=scale;
     var x1 = this.convertGridToPos(x)- blocksize/2;
@@ -89,12 +115,7 @@ var MazeWorldModel = {
     var y2 = blocksize;
     ctx.fillStyle=colour;
     ctx.fillRect(x1,y1,x2,y2);
-    //ctx.stroke();
-  //  ctx.closePath();
-
-
   },
-
 
   randomGen : function(seed)
   {
@@ -259,6 +280,7 @@ var MazeWorldModel = {
 
   CanMove : function (x, y)
   {
+    console.log("testig to see if ",x,y," accessible");
     if (typeof this.map == "undefined")
       console.log("Problem");
 
@@ -304,14 +326,10 @@ var MazeWorldModel = {
     return this.board[x][y];
   },
 
-
-
-
   //Check to see if the new space is inside the board and not a wall
-
-
   KeyUp: function(e)
   {
+    console.log("player at ",this.player.x, this.player.y);
       if((e.which == 38) && this.CanMove(this.player.x, this.player.y-1))//Up arrow
       {
         this.player.y-=2;
@@ -320,11 +338,11 @@ var MazeWorldModel = {
       {
         this.player.y+=2;
       }
-      else if((e.which == 37) &&  this.CanMove(this.player.x-1, this.player.y))
+      else if((e.which == 100)||(e.which == 37) &&  this.CanMove(this.player.x-1, this.player.y)) // left
       {
         this.player.x-=2;
       }
-      else if((e.which == 39) &&  this.CanMove(this.player.x+1, this.player.y))// right?
+      else if((e.which == 102)||(e.which == 39) &&  this.CanMove(this.player.x+1, this.player.y))// right?
       {
         this.player.x+=2;
       }

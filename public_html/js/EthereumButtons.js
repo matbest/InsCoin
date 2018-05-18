@@ -16,7 +16,7 @@ function SetBuyButtonStatus(st)
 
 function SetupBuyButton(x,y)
 {
-  console.log("Testing to see if location ", x,y, "is free");
+  console.log("Testing to see if location ", x,y, "is free to buy");
   if (isAvailable(x,y,SetBuyButtonStatus));
   GetPlotPrice(function(a){
     document.getElementById("BuyButton").innerHTML = "Buy (" + a + " Eth)";
