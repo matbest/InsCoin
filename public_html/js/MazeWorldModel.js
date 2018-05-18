@@ -61,7 +61,7 @@ var MazeWorldModel = {
          if (1)
          if (draw)
           if ((i%2 != 1 ) && (j%2 !=1 ))
-            this.FillSquare(i/2,j/2, colour);
+            this.FillSquare(i/2,j/2, colour,2);
        }
   		}
   	}
@@ -69,23 +69,25 @@ var MazeWorldModel = {
   },
 
  count : 0,
-  FillSquare : function(x,y,colour)
+  FillSquare : function(x,y,colour, scale =1 )
   {
-
+    //scale = (typeof scale !== 'undefined') ?  scale : 1;
     console.log("Filling Square",this.count++,x,y,colour);
 
-    ctx.beginPath();
-    ctx.lineWidth="0";
-    ctx.strokeStyle=colour;
+    //ctx.beginPath();
+    //ctx.lineWidth="0";
+    //ctx.strokeStyle=colour;
 
-    var blocksize = this.pathWidth -this.wallWidth*2;
+    var blocksize = (this.pathWidth -this.wallWidth*2);
+    blocksize *=scale;
     var x1 = this.convertGridToPos(x)- blocksize/2;
     var y1 = this.convertGridToPos(y)-  blocksize/2;
     var x2 = blocksize;
     var y2 = blocksize;
-    ctx.rect(x1,y1,x2,y2);
-    ctx.stroke();
-    ctx.closePath();
+    ctx.fillStyle=colour;
+    ctx.fillRect(x1,y1,x2,y2);
+    //ctx.stroke();
+  //  ctx.closePath();
 
 
   },

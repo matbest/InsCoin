@@ -15,5 +15,6 @@ var MazeCreator = {
   {
     //this.BlockCircle(24,24,10,true,'black',true);
     MazeWorldModel.BlockCircle(this.centerX,this.centerY,this.radius,true,'black',false);
+    MazeWorldModel.FillSquare(this.startX,this.startY,'pink',0.5);
   }
 }
