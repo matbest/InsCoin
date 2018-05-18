@@ -3,8 +3,8 @@ var MazeCreator = {
   centerX : 10,
   centerY :10,
   radius: 7,
-  startX: 5,
-  startY: 5,
+  startX: 6,
+  startY: 6,
 
   Start : function()
   {

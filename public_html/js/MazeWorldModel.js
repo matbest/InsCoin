@@ -6,8 +6,8 @@ var MazeWorldModel = {
   pathWidth : 10, //Width of the Maze Path
   wallWidth: 2, //Width of the Walls between Paths
   outerWall : 2, //Width of the Outer most wall
-  width : 40, //Number paths fitted horisontally
-  height : 40, //Number paths fitted vertically
+  width : 20, //Number paths fitted horisontally
+  height : 20, //Number paths fitted vertically
   delay : 1, //Delay between algorithm cycles
   xStart : 0, //Horisontal starting position
   yStart : 0, //Vertical starting position
@@ -45,6 +45,10 @@ var MazeWorldModel = {
   		}
   	}
   },
+  IsWall: function(x,y)
+  {
+    return ((x%2 != 1 ) && (y%2 !=1 ));
+  },
   BlockCircle : function(centerX, centerY, radius,value, colour, draw)
   {
   	for (var i = 0; i < this.height * 2; i++)
@@ -53,14 +57,14 @@ var MazeWorldModel = {
   		{
         if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
         {
-
-  			   this.map[i][j] = value;
+          // if ((i%2 != 1 ) && (j%2 !=1 ))
+  			      this.map[i][j] = value;
        }
        else
        {
          if (1)
          if (draw)
-          if ((i%2 != 1 ) && (j%2 !=1 ))
+          if (this.IsWall(i,j))
             this.FillSquare(i/2,j/2, colour,2);
        }
   		}
@@ -125,11 +129,14 @@ var MazeWorldModel = {
   	if(0)	this.blockPercentage(.1);
     ConsolePrintMap();
 
-    if(1)
-    {
-    //  this.BlockCircle(24,24,10,true,'black',true);
-      MazeCreator.Start();
-    }
+
+    //This draws a basic maze
+    MazeCreator.Start();
+
+    // put the player at the start of the mazecanvas
+    this.player.x = MazeCreator.startX;
+    this.player.y = MazeCreator.startY;
+
 
     ctx.beginPath();
 
