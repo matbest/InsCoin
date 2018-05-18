@@ -5,6 +5,7 @@ ConsolePrintMap = function()
 	var row = "";
 	console.log("Map size is ", width, "X",height);
 	console.log(" #  = blocked, , = traversable, . = free space");
+	console.log(" True is traversable, false is blocked");
 
 	//Evens are the spaces, odds are the walls.
 	for (var i = 0; i < height * 2; i++)

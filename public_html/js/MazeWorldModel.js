@@ -6,14 +6,14 @@ var MazeWorldModel = {
   pathWidth : 10, //Width of the Maze Path
   wallWidth: 2, //Width of the Walls between Paths
   outerWall : 2, //Width of the Outer most wall
-  width : 20, //Number paths fitted horisontally
-  height : 20, //Number paths fitted vertically
+  width : 40, //Number paths fitted horisontally
+  height : 40, //Number paths fitted vertically
   delay : 1, //Delay between algorithm cycles
   xStart : 0, //Horisontal starting position
   yStart : 0, //Vertical starting position
   seed : (Math.random() * 100000) | 0, //Seed for random numbers
-  wallColor : "#d24", //Color of the walls
-  pathColor : "#222a33", //Color of the path
+  wallColor : "green", //Color of the walls
+  pathColor : "blue", //Color of the path
 
   map : [],
   route: [],
@@ -123,15 +123,19 @@ var MazeWorldModel = {
   	if(0)	this.blockPercentage(.1);
     ConsolePrintMap();
 
-    if(1) this.BlockCircle(15,15,7,true,'blue',true);
+    if(1)
+    {
+    //  this.BlockCircle(24,24,10,true,'black',true);
+      MazeCreator.Start();
+    }
+
     ctx.beginPath();
 
     ConsolePrintMap();
-    ctx.strokeStyle='black';
-    ctx.stroke();
 
-    this.xStart = 5;// = (this.width / 2) | 0; //Horisontal starting position
-  	this.yStart = 5;//= (this.height / 2) | 0; //Vertical starting position
+
+    this.xStart = MazeCreator.startX;// = (this.width / 2) | 0; //Horisontal starting position
+  	this.yStart = MazeCreator.startY;//= (this.height / 2) | 0; //Vertical starting position
 
   	//route starts here.
     this.map[this.yStart * 2][this.xStart * 2] = true;
@@ -150,8 +154,7 @@ var MazeWorldModel = {
 
   loop : function()
   {
-      ctx.strokeStyle='black';
-    ctx.stroke();
+
     console.log("thinking");
 
   	routelength = this.route.length;
@@ -184,7 +187,7 @@ var MazeWorldModel = {
   		// If there is still a route
       if (this.route.length > 0)
   		{
-          ctx.strokeStyle='black';
+          ctx.strokeStyle='green';
           ctx.moveTo(
             this.convertGridToPos(this.route[this.route.length - 1][0]),
             this.convertGridToPos(this.route[this.route.length - 1][1]));
@@ -199,7 +202,12 @@ var MazeWorldModel = {
         console.log("unsetting");
   			ConsolePrintMap();
         if(1)
-          this.BlockCircle(15,15,7,true,'blue',false);
+
+          if(1)
+          {
+          //  this.BlockCircle(24,24,10,true,'black',true);
+            MazeCreator.Finish();
+          }
           console.log("unset");
 	      ConsolePrintMap();
   		}
@@ -233,10 +241,10 @@ var MazeWorldModel = {
   {
     ctx.beginPath();
     var half = this.pathWidth/2;
-    ctx.fillStyle = "Green";
+    ctx.fillStyle = "red";
     ctx.arc(this.convertGridToPos(this.GetPlayerX()),this.convertGridToPos(this.GetPlayerY()), half, 0, 2*Math.PI);
     ctx.fill();
-  
+
   },
 
   convertGridToPos: function(grid)
