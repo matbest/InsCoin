@@ -55,7 +55,7 @@ init : function()
   },
   IsWall: function(x,y)
   {
-    return ((x%2 != 1 ) && (y%2 !=1 ));
+    return (this.IsHorizontalWall(x,y) || this.IsVerticalWall(x,y));
   },
   IsHorizontalWall: function(x,y)
   {
@@ -80,7 +80,7 @@ init : function()
       this.SetMap(i,j,value);
   },
 
-  BlockCircle : function(centerX, centerY, radius,value, colour, draw)
+  MarkPlacesForRouteFinding : function(centerX, centerY, radius,value, colour, draw)
   {
   	for (var i = 0; i < MazeWorldCore.height * 2; i++)
   	{
@@ -88,6 +88,7 @@ init : function()
   		{
         if (this.IsPlace(i,j))
         {
+          // if this place is outside of the radius then set its value from the argument
           if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
           {
               this.SetMap(i,j,value);
@@ -103,15 +104,16 @@ init : function()
   	}
         ctx.closePath();
   },
-  UnBlockCircleWall : function(centerX, centerY, radius,value, colour, draw)
+  MarkWallsForRouteFinding : function(centerX, centerY, radius,value, colour, draw)
   {
-    for (var i = 0; i < this.height * 2; i++)
-    {
-      for (var j = 0; j < this.width * 2; j++)
-      {
+  	for (var i = 0; i < MazeWorldCore.height * 2; i++)
+  	{
+  		for (var j = 0; j < MazeWorldCore.width * 2; j++)
+  		{
         if (this.IsWall(i,j))
         {
-          if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
+          // if this place is outside of the radius then set its value from the argument
+          if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) > radius*radius)
           {
               this.SetMap(i,j,value);
           }
@@ -122,8 +124,8 @@ init : function()
               this.FillSquare(i/2,j/2, colour,2);
           }
         }
-      }
-    }
+  		}
+  	}
         ctx.closePath();
   },
 
@@ -132,13 +134,13 @@ init : function()
   FillSquare : function(x,y,colour, scale =1 )
   {
     console.log("Filling Square",this.count++,x,y,colour);
-    var blocksize = (this.pathWidth -this.wallWidth*2);
+    var blocksize = (MazeWorldCore.pathWidth -MazeWorldCore.wallWidth*2);
     blocksize *=scale;
     var x1 = MazeWorldCore.convertGridToPos(x)- blocksize/2;
     var y1 = MazeWorldCore.convertGridToPos(y)-  blocksize/2;
     var x2 = blocksize;
     var y2 = blocksize;
-    ctx.fillStyle=colour;
+    ctx.fillStyle='black';
     ctx.fillRect(x1,y1,x2,y2);
   },
 

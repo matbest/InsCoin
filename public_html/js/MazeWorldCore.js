@@ -62,13 +62,19 @@ var MazeWorldCore = {
     canvas.width = this.outerWall * 2 + this.width * (this.pathWidth + this.wallWidth) - this.wallWidth;
     canvas.height = this.outerWall * 2 + this.height * (this.pathWidth + this.wallWidth) - this.wallWidth;
 
-    ctx.fillStyle = this.wallColor;
+    //ctx.fillStyle = this.wallColor;
+    ctx.beginPath();
+    ctx.fillStyle='blue';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = this.pathColor;
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = this.wallColor;
+    ctx.strokeStyle = 'pink';
     ctx.lineCap = "square";
 
     ctx.lineWidth = this.pathWidth;
-    ctx.beginPath();
+
 
     // Build empty Map
     random = this.randomGen(seed);
@@ -80,16 +86,11 @@ var MazeWorldCore = {
 
     //This draws a basic maze
     MazeCreator.Start();
-
-
-
     ctx.beginPath();
-
     ConsolePrintMap();
 
-
-    this.xStart = MazeCreator.startX;// = (this.width / 2) | 0; //Horisontal starting position
-  	this.yStart = MazeCreator.startY;//= (this.height / 2) | 0; //Vertical starting position
+    this.xStart = MazeCreator.startX;
+  	this.yStart = MazeCreator.startY;
 
   	//route starts here.
     this.map[this.yStart * 2][this.xStart * 2] = true;
@@ -146,12 +147,7 @@ var MazeWorldCore = {
     }
   		else
       {
-        //done
-        console.log("Done");
-  			ConsolePrintMap();
         MazeCreator.Finish();
-        console.log("unset");
-	      ConsolePrintMap();
   		}
       return;
     }

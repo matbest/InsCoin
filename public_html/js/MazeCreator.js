@@ -7,13 +7,15 @@ var MazeCreator = {
   startY: 6,
 
   Start : function()
-  {
-    MazeWorldModel.BlockCircle(this.centerX,this.centerY,this.radius,true,'pink',true);
+  {     ConsolePrintMap();
+        MazeWorldModel.MarkPlacesForRouteFinding(this.centerX,this.centerY,this.radius,true,'pink',true);
+        ConsolePrintMap();
   },
   Finish : function()
   {
-    //MazeWorldModel.BlockCircle(this.centerX,this.centerY,this.radius,true,'blue',false);
-    MazeWorldModel.UnBlockCircleWall(this.centerX,this.centerY,this.radius,true,'blue',false);
-    MazeWorldModel.FillSquare(this.startX,this.startY,'green',0.5);
+    ConsolePrintMap();
+      MazeWorldModel.MarkWallsForRouteFinding(this.centerX,this.centerY,this.radius,true,'pink',false);
+ConsolePrintMap();
+  //  MazeWorldModel.FillSquare(this.startX,this.startY,'green',0.5);
   }
 }

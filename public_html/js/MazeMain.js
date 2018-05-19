@@ -29,7 +29,7 @@ ConsolePrintMap = function()
 					else if (MazeWorldModel.IsVerticalWall(i,j)&&(MazeWorldModel.GetMap(i,j)!=true))
 						row = row.concat("#");
 					else  if (MazeWorldModel.IsPlace(i,j)&&(MazeWorldModel.GetMap(i,j)==true))
-							row = row.concat("0");
+							row = row.concat("_");
 					else
 						row = row.concat(" ");
 
