@@ -1,24 +1,25 @@
-
 ConsolePrintMap = function()
 {
-	console.log("Player at ", MazeWorldModel.player.x, ",",MazeWorldModel.player.y);
+	console.log("Player at ", MazeWorldCore.player.x, ",",MazeWorldCore.player.y);
 	var row = "";
-	console.log("Map size is ", width, "X",height);
+	console.log("Map size is ", MazeWorldCore.GetBoardWidth(), "X",MazeWorldCore.GetBoardLength());
 	console.log("#  = blocked , = traversable wall . = free space");
 	console.log("True is traversable, false is blocked");
 	console.log("Even-Odd numbers in the arrays are walls, double even positions are possible locations to be.")
-	//Evens are the spaces, odds are the walls.
-	for (var i = 0; i < height * 2; i++)
+
+	height = MazeWorldCore.GetBoardLength();
+	width =  MazeWorldCore.GetBoardWidth();
+	for (var i = 0; i < height; i++)
 	{
 		row = row.concat(i);
 		row = row.concat(". ");
 		if (i<10)
 			row = row.concat(" ");
 
-		for (var j = 0; j < width * 2; j++)
+		for (var j = 0; j < width ; j++)
 		{
 			// draw the player if thats where he is.
-			if (MazeWorldModel.player.x == j && MazeWorldModel.player.y == i)
+			if (MazeWorldCore.player.x == j && MazeWorldCore.player.y == i)
 				row = row.concat("X");
 			//else draw the map
 			else
@@ -94,8 +95,8 @@ settings =
     seed = parseFloat(inputSeed.value);
     x = (width / 2) | 0;
     y = (height / 2) | 0;
-    MazeWorldModel.init();
-    MazeWorldModel.loop();
+  //  MazeWorldModel.init();
+  //  MazeWorldModel.loop();
   }
 };
 
@@ -120,7 +121,7 @@ setInterval(settings.check, 400);
 		if (EthereumConnection.connected)
 		{
 			if (typeof SetupBuyButton !== "undefined")
-				SetupBuyButton(MazeWorldModel.player.x,MazeWorldModel.player.y);
+				SetupBuyButton(MazeWorldCore.player.x,MazeWorldCore.player.y);
 		}
 		else {
 			console.log("Ethereum not connected");

@@ -8,12 +8,12 @@ var MazeCreator = {
 
   Start : function()
   {
-    MazeWorldModel.BlockCircle(this.centerX,this.centerY,this.radius,true,'black',true);
+    MazeWorldModel.BlockCircle(this.centerX,this.centerY,this.radius,true,'pink',true);
   },
   Finish : function()
   {
     //MazeWorldModel.BlockCircle(this.centerX,this.centerY,this.radius,true,'blue',false);
     MazeWorldModel.UnBlockCircleWall(this.centerX,this.centerY,this.radius,true,'blue',false);
-    MazeWorldModel.FillSquare(this.startX,this.startY,'pink',0.5);
+    MazeWorldModel.FillSquare(this.startX,this.startY,'green',0.5);
   }
 }
