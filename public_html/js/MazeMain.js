@@ -23,16 +23,16 @@ ConsolePrintMap = function()
 			//else draw the map
 			else
 			{
-				  if (MazeWorldModel.IsHorizontalWall(i,j)&&(MazeWorldModel.map[i][j]!=true))
+				  if (MazeWorldModel.IsHorizontalWall(i,j)&&(MazeWorldModel.GetMap(i,j)!=true))
 						row = row.concat("#");
-					else if (MazeWorldModel.IsVerticalWall(i,j)&&(MazeWorldModel.map[i][j]!=true))
+					else if (MazeWorldModel.IsVerticalWall(i,j)&&(MazeWorldModel.GetMap(i,j)!=true))
 						row = row.concat("#");
-					else  if (MazeWorldModel.IsPlace(i,j)&&(MazeWorldModel.map[i][j]==true))
+					else  if (MazeWorldModel.IsPlace(i,j)&&(MazeWorldModel.GetMap(i,j)==true))
 							row = row.concat("0");
 					else
 						row = row.concat(" ");
 
-					
+
 				}
 		}
 		console.log(row);

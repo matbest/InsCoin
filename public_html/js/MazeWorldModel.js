@@ -17,7 +17,22 @@ var MazeWorldModel = {
 
   map : [],
   route: [],
-
+  GetMap:function(i,j)
+  {
+    return this.map[i][j];
+  },
+  SetMap:function(i,j,value)
+  {
+    return this.map[i][j] = value;
+  },
+  GetBoardLength: function()
+  {
+    return this.map.length;
+  },
+  GetBoardWidth: function()
+  {
+      return  this.map[1].length;
+  },
   player: {
       x: 0,
       y: 0
@@ -41,7 +56,7 @@ var MazeWorldModel = {
   		{
   			var random_boolean = Math.random() >= 1-percentage;
         if (random_boolean)
-  			   this.map[i][j] = random_boolean;
+  			   this.SetMap(i,j,random_boolean);
   		}
   	}
   },
@@ -69,7 +84,7 @@ var MazeWorldModel = {
   SafeSetMap: function(x,y,value)
   {
     if (this.IsPlace(x,y))
-      this.map[x][y] = value;
+      this.SetMap(i,j,value);
   },
 
   BlockCircle : function(centerX, centerY, radius,value, colour, draw)
@@ -82,8 +97,7 @@ var MazeWorldModel = {
         {
           if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
           {
-            //this.map[i][j] = value;
-              this.map[i][j] = value;
+              this.SetMap(i,j,value);
           }
           else
           {
@@ -106,8 +120,7 @@ var MazeWorldModel = {
         {
           if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
           {
-            //this.map[i][j] = value;
-              this.map[i][j] = value;
+              this.SetMap(i,j,value);
           }
           else
           {
@@ -257,11 +270,10 @@ var MazeWorldModel = {
     this.route.push([direction[0] + x, direction[1] + y]);
 
   	// Draw the new step
-  //  ctx.lineTo(   (direction[0] + x) * (this.pathWidth + this.wallWidth) + offset,
-  //                (direction[1] + y) * ( this.pathWidth +  this.wallWidth) + offset );
-   ctx.strokeStyle='black';
-   ctx.lineTo(  this.convertGridToPos(direction[0] + x),this.convertGridToPos(direction[1] + y));
-  ctx.stroke();
+    ctx.strokeStyle='black';
+    ctx.lineTo(  this.convertGridToPos(direction[0] + x),this.convertGridToPos(direction[1] + y));
+    ctx.stroke();
+
   	// Assign the map as visited
   	var x1 = (direction[1] + y) * 2;
   	var y1 = (direction[0] + x) * 2;
@@ -270,8 +282,7 @@ var MazeWorldModel = {
     this.map[x1][y1] = true;
     this.map[x2][y2] = true;
 
-
-  //  timer = setTimeout(this.loop.bind(this), this.delay);
+    //Iterate on the search
     this.loop();
   },
 
@@ -315,15 +326,7 @@ var MazeWorldModel = {
     return  notOffEdge && notBlocked;
   },
 
-  GetBoardLength: function()
-  {
-    return this.map.length;
-  },
 
-  GetBoardWidth: function()
-  {
-      return  this.map[1].length;
-  },
   GetPlayerX: function()
   {
     return  this.player.x/2;
@@ -333,11 +336,6 @@ var MazeWorldModel = {
       return  this.player.y/2;
   },
 
-
-  Filled: function(x,y)
-  {
-    return this.board[x][y];
-  },
 
   //Check to see if the new space is inside the board and not a wall
   KeyUp: function(e)
