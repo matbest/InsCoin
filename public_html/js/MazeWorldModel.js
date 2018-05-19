@@ -325,8 +325,6 @@ var MazeWorldModel = {
     }
     return  notOffEdge && notBlocked;
   },
-
-
   GetPlayerX: function()
   {
     return  this.player.x/2;
@@ -335,8 +333,6 @@ var MazeWorldModel = {
   {
       return  this.player.y/2;
   },
-
-
   //Check to see if the new space is inside the board and not a wall
   KeyUp: function(e)
   {
