@@ -47,7 +47,15 @@ var MazeWorldModel = {
   },
   IsWall: function(x,y)
   {
-    return ((x%2 != 1 ) || (y%2 !=1 ));
+    return ((x%2 != 1 ) && (y%2 !=1 ));
+  },
+  IsHorizontalWall: function(x,y)
+  {
+    return ((x%2 == 0 ) && (y%2 ==1 ));
+  },
+  IsVerticalWall: function(x,y)
+  {
+    return ((x%2 == 1 ) && (y%2 ==0 ));
   },
   IsPlace: function(x,y)
   {
@@ -63,21 +71,7 @@ var MazeWorldModel = {
     if (this.IsPlace(x,y))
       this.map[x][y] = value;
   },
-  PutWallsAroundPlace: function(x,y)
-  {
-    if (this.IsPlace(x,y))
-    {
-      this.map[x][y] = true;
-      //(False means not traversable)
-      this.SafeSetMap(x-1,y,false);
-      this.SafeSetMap(x+1,y,false);
-      this.SafeSetMap(x,y-1,false);
-      this.SafeSetMap(x,y+1,false);
-    }
-    else {
-      console.error("tried to set an invalid location");
-    }
-  },
+
   BlockCircle : function(centerX, centerY, radius,value, colour, draw)
   {
   	for (var i = 0; i < this.height * 2; i++)
@@ -89,7 +83,7 @@ var MazeWorldModel = {
           if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
           {
             //this.map[i][j] = value;
-            this.PutWallsAroundPlace(i,j);
+              this.map[i][j] = value;
           }
           else
           {
@@ -102,6 +96,31 @@ var MazeWorldModel = {
   	}
         ctx.closePath();
   },
+  UnBlockCircleWall : function(centerX, centerY, radius,value, colour, draw)
+  {
+    for (var i = 0; i < this.height * 2; i++)
+    {
+      for (var j = 0; j < this.width * 2; j++)
+      {
+        if (this.IsWall(i,j))
+        {
+          if ((centerX-i )*(centerX-i )+ (centerY -j)*(centerY -j) >= radius*radius)
+          {
+            //this.map[i][j] = value;
+              this.map[i][j] = value;
+          }
+          else
+          {
+
+           if (draw)
+              this.FillSquare(i/2,j/2, colour,2);
+          }
+        }
+      }
+    }
+        ctx.closePath();
+  },
+
 
  count : 0,
   FillSquare : function(x,y,colour, scale =1 )
@@ -225,15 +244,9 @@ var MazeWorldModel = {
       {
         //done
         console.log("Done");
-        console.log("unsetting");
   			ConsolePrintMap();
-        if(1)
-
-          if(1)
-          {
-            MazeCreator.Finish();
-          }
-          console.log("unset");
+        MazeCreator.Finish();
+        console.log("unset");
 	      ConsolePrintMap();
   		}
       return;
