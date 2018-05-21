@@ -1,4 +1,14 @@
-ignoreMetamask = false;
+// --
+// false = connect direct to localhost
+// true = connect to web3 through MetaMask
+// --
+ignoreMetamask = true;
+
+// use remix to deploy.
+var contractAddresses = {
+    'Ganache': '0xa208d316a9dbea6885e36a8254ca19f644d51444',
+    'Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'
+};
 
 /**
  * find out what network we are connected to
@@ -11,6 +21,11 @@ function GetNetworkVersion()
 	console.log("Network ID is ", network);
   switch (network)
 	{
+		case "loading":
+      console.log("Web3 hasn't loaded yet");
+			//console.error("Web3 hasn't loaded yet");
+      return 'loading';
+      break
     case "1":
       console.log('1 Ethereum mainnet');
       return 'mainnet';
@@ -41,10 +56,7 @@ function GetNetworkVersion()
       break;
     }
 }
-var contractAddresses = {
-    'Ganache': '0xbfadb3e0db6e18c19abcabff493e02ebf7e2c772',
-    'Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'
-};
+
 
 var EthereumConnection = {
   connected: false,
@@ -56,6 +68,8 @@ var EthereumConnection = {
   },
   GetContractAddress: function(networkName)
   {
+		if (networkName == "loading")
+		  return contractAddresses['Ganache']; // if the network is unknown there is probably a bug im working on locally, so I'm most likely on ganache locally.
     return contractAddresses[networkName];
   },
   GetContract : function()
@@ -154,8 +168,8 @@ function isAvailable(x,y,func)
     else
     {
       console.log('Making sending with tx hash: ' + String(res));
-      var free = !res[0]
-      func(free);
+      var isAvailable = !res[0]
+      func(isAvailable);
     }
   });
 }

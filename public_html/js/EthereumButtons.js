@@ -8,19 +8,27 @@ assert(1===1);
 
 
 
-function SetBuyButtonStatus(st)
+function SetBuyButtonStatus(newButtonStatus)
 {
-    document.getElementById("BuyButton").disabled = !st;
-    console.log("Setting buy button status to ", st);
+
+    var buyButton = document.getElementById("BuyButton");
+    buyButton.disabled = !newButtonStatus;
+    console.log("Setting buy button status to ", newButtonStatus);
+    if (newButtonStatus)
+    {
+      GetPlotPrice(function(a){
+        document.getElementById("BuyButton").innerHTML = "Buy (" + a + " Eth)";
+      });
+    }
+    else {
+      document.getElementById("BuyButton").innerHTML = "Buy";
+    }
 }
 
 function SetupBuyButton(x,y)
 {
   console.log("Testing to see if location ", x,y, "is free to buy");
-  if (isAvailable(x,y,SetBuyButtonStatus));
-  GetPlotPrice(function(a){
-    document.getElementById("BuyButton").innerHTML = "Buy (" + a + " Eth)";
-  });
+  isAvailable(x,y,SetBuyButtonStatus);
 }
 function isNum(data)
 {
@@ -29,8 +37,8 @@ function isNum(data)
 
 function myBuyFunction( )
 {
-  var x = MazeWorldModel.player.x;
-  var y = MazeWorldModel.player.y;
+  var x = MazeWorldCore.player.x;
+  var y = MazeWorldCore.player.y;
   if(!isNum(x))
     console.error('X -oops not a number');
   if(!isNum(y))

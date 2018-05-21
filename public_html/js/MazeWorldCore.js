@@ -6,9 +6,6 @@ var MazeWorldCore = {
   width : 20, //Number paths fitted horisontally
   height : 20, //Number paths fitted vertically
 
-  width : 20, //Number paths fitted horisontally
-  height : 20, //Number paths fitted vertically
-
   xStart : 0, //Horisontal starting position
   yStart : 0, //Vertical starting position
   seed : (Math.random() * 100000) | 0, //Seed for random numbers
