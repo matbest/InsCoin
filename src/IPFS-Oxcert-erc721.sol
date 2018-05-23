@@ -1,9 +1,10 @@
 pragma solidity ^0.4.10;
 
-import 'https://github.com/OpenZeppelin/zeppelin-solidity/contracts/token/ERC721/ERC721BasicToken.sol';
+//import 'https://github.com/OpenZeppelin/zeppelin-solidity/contracts/token/ERC721/ERC721BasicToken.sol';
 import 'https://github.com/OpenZeppelin/zeppelin-solidity/contracts/ownership/Ownable.sol';
+import 'https://github.com/0xcert/ethereum-erc721/contracts/tokens/NFTokenEnumerable.sol';
 
-contract myTest721Token is ERC721BasicToken, Ownable
+contract myTest721Token is NFTokenEnumerable, Ownable
 {
      // Payment stuff -- //
 
@@ -27,11 +28,6 @@ contract myTest721Token is ERC721BasicToken, Ownable
     function SetPlotPrice(uint32 price) external  onlyOwner
     {
         myPlotPrice = price;
-    }
-
-    function GetPlotPrice() view external  returns(uint256)
-    {
-        return myPlotPrice ;
     }
 
     function sendEth() payable public returns (bool)
