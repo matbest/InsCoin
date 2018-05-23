@@ -1,19 +1,3 @@
-function loadScript(url, callback)
-{
-    // Adding the script tag to the head as suggested before
-    var head = document.getElementsByTagName('head')[0];
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-
-    // Then bind the event to the callback function.
-    // There are several events for cross browser compatibility.
-    script.onreadystatechange = callback;
-    script.onload = callback;
-
-    // Fire the loading
-    head.appendChild(script);
-}
 
 
 loadScript("js/web3.js", ETHinters);
@@ -25,24 +9,14 @@ loadScript("js/ethjs.js", ETHinters);
 
 
 
-function GetAccountAddress()
-{
-	if (ignoreMetamask == true)
-	{
-		return '0x7099B34900d2A33AA124fc5bA2a8a90E5dD5EBE1';
-	}
-	else
-	{
-		return web3.eth.accounts[0];
-	}
-}
+
 
 
 
 function isAvailable(x,y,func)
 {
 
-  var plotContract =EthereumConnection.GetContract();
+  var plotContract = EthereumConnection.GetContract();
 //  var activeAccount = GetAccountAddress();
   var available = false;
   plotContract.LocationAssigned(x,y,function(err, res){

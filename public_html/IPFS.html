@@ -6,6 +6,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
 <link rel="stylesheet" type="text/css" href="css/PageLayout.css">
+<link rel="stylesheet" type="text/css" href="css/Button.css">
 
 <title>Page Title</title>
 <meta name="description" content="Write some words to describe your html page">
@@ -14,11 +15,36 @@
 <script type="text/javascript" src="js/ethjs.js"></script>
 
 
-<script type= "text/javascript" src="js/ContractABI.js"></script>
-<script type= "text/javascript" src="js/ETHinteractions.js"></script>
-<script type="text/javascript" src="js/EthereumButtons.js"></script>
+<script type= "text/javascript" src="js/IPFSContractABI.js"></script>
+<script type= "text/javascript" src="js/ETHCommon.js"></script>
+
+<script type= "text/javascript">
 
 
+
+function myTest(x,y,func)
+{
+
+  var contract = EthereumConnection.GetContract("IPFS");
+  contract.GetMintPrice(function(err, res){
+    if (err)
+    {
+      	document.getElementById("testbutton").innerHTML = "NC Error!";
+    }
+    else
+    {
+			price = Number(res[0]);
+
+			if (price == 10000000000000000)
+				document.getElementById("testbutton").innerHTML = "OK!";
+				else {
+					document.getElementById("testbutton").innerHTML = "C Error!";
+				}
+
+    }
+  });
+}
+</script>
 <body>
 <div class="blended_grid">
 <div class="pageHeader">
@@ -28,17 +54,32 @@
 
 </div>
 <div class="pageContent">
+	<div>
+						<button class="button" id="testbutton" type="button" onclick="myTest()">Test</button>
+<p>
+	<br>
+		<ul>
+			<li> you are user X
+				<LI> you are on NEtwork Y
+					<li> you do / do not have metamask installed
+					</ul>
+	</div>
+	<p>
+
+		<form action="/">
+			<fieldset>
+				<legend>Upload photo</legend>
+				<input type="file" name="photo" id="photo">
+				<button class="button" type="button" onclick="myMint()">Upload</button>
+			</fieldset>
+		</form>
+
 	<div id="Interactions">
-		<table border='1|1'>
-			<tr>
-				<td> <label>ID</label><input id=id type="text"/></td>
-				<td><label>file</label><input id=file type="text"/></td>
-				<td><input id=create type="button" value="Create"/></td>
-			</tr>
-	</table>
+
 </div>
 	<div id="box">
 </div>
+
 <script type="text/javascript" >
 var rows = [{
     name: "John",

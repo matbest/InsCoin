@@ -6,10 +6,28 @@ ignoreMetamask = true;
 
 // use remix to deploy.
 var contractAddresses = {
-    'IPFS-Ganache': '0x1e172369189bdf35d0ab383c980c552c349dfedf',
+    'IPFS-Ganache': '0x5d3bd29ec2cf70697b004673765b82001d7d26f2',
     'DLand-Ganache': '0xcaf22b02250339642e73e6a3a2d9dc53653a30e8',
     'DLand-Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'
 };
+
+function loadScript(url, callback)
+{
+    // Adding the script tag to the head as suggested before
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+
+    // Then bind the event to the callback function.
+    // There are several events for cross browser compatibility.
+    script.onreadystatechange = callback;
+    script.onload = callback;
+
+    // Fire the loading
+    head.appendChild(script);
+}
+
 
 /**
  * find out what network we are connected to
@@ -58,6 +76,17 @@ function GetNetworkVersion()
     }
 }
 
+function GetAccountAddress()
+{
+	if (ignoreMetamask == true)
+	{
+		return '0x7099B34900d2A33AA124fc5bA2a8a90E5dD5EBE1';
+	}
+	else
+	{
+		return web3.eth.accounts[0];
+	}
+}
 
 var EthereumConnection = {
   connected: false,
@@ -70,14 +99,16 @@ var EthereumConnection = {
   GetContractAddress: function(networkName,scriptname)
   {
 		if (networkName == "loading")
-		  return contractAddresses['DLand-Ganache']; // if the network is unknown there is probably a bug im working on locally, so I'm most likely on ganache locally.
+		  networkName= 'Ganache'; // if the network is unknown there is probably a bug im working on locally, so I'm most likely on ganache locally.
     var name = scriptname+ "-" + networkName;
     return contractAddresses[name];
   },
-  GetContract : function()
+  GetContract : function(contractName="DLand")
   {
     var networkName = GetNetworkVersion();
-    var contractAddress = this.GetContractAddress(networkName,"DLand");
+    var contractAddress = this.GetContractAddress(networkName,contractName);
+    var fullcontractname = contractName + "ContractABI.js" // make sure you've saved the ABI defn in this file.
+    loadScript(fullcontractname);
     var plotContract = this.loadContract(contractAddress, ContractABI);
     if (plotContract != 'undefined')
       this.connected = true;

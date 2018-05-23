@@ -1,3 +1,4 @@
+
 var MazeWorldCore = {
 
   pathWidth : 10, //Width of the Maze Path
