@@ -1,14 +1,15 @@
 .button {
   padding: 5px 15px;
-  font-size: 24px;
+  font-size: 14px;
   text-align: center;
   cursor: pointer;
   outline: none;
   color: #fff;
   background-color: #4CAF50;
   border: none;
-  border-radius: 15px;
+  border-radius: 5px;
   box-shadow: 0 9px #999;
+  margin-bottom: 30px;
 }
 
 .button:hover {background-color: #3e8e41}
@@ -17,4 +18,26 @@
   background-color: #3e8e41;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
+}
+
+input[type=text] {
+    border: 2px solid red;
+    border-radius: 4px;
+}
+
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+  padding: 5px 15px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 9px #999;
+  margin-bottom: 30px;
 }

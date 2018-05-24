@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JavaScript file upload</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+    <script src="https://wzrd.in/standalone/buffer"></script><!-- for the buffer -->
+    <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"
+    integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
+    crossorigin="anonymous"></script><!-- for the ipfs Interface -->
+    <script type="text/javascript" src="js/web3.js"></script>
+    <script type="text/javascript" src="js/ethjs.js"></script>
+
+
+    <script type= "text/javascript" src="js/IPFSContractABI.js"></script>
+    <script type= "text/javascript" src="js/ETHCommon.js"></script>
+
+
+  </head>
+  <script type="text/javascript">
+    function upload() {
+      const reader = new FileReader();
+      reader.onloadend = function() {
+        const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
+        const buf = buffer.Buffer(reader.result) // Convert data into buffer
+        ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
+          if(err) {
+            console.error(err)
+            return
+          }
+          let url = `https://ipfs.io/ipfs/${result[0].hash}`
+          let ipfsaddess = result[0].hash;
+          console.log(`Url --> ${url}`)
+          document.getElementById("ipfsAddress").value= ipfsaddess;
+          document.getElementById("output").src = url;
+          document.getElementById("url").innerHTML= url
+          document.getElementById("url").href= url
+          document.getElementById("output").src = url
+        })
+      }
+      const photo = document.getElementById("photo");
+      reader.readAsArrayBuffer(photo.files[0]); // Read Provided File
+    }
+  </script>
+
+<script>
+function myTest()
+{
+
+  var contract = EthereumConnection.GetContract("IPFS");
+  contract.GetMintPrice(function(err, res){
+    if (err)
+    {
+        document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
+    }
+    else
+    {
+      price = Number(res[0]);
+      if (price == 10000000000000000)
+        document.getElementById("testbutton").innerHTML = "OK!";
+        else {
+          document.getElementById("testbutton").innerHTML = "C Error!";
+        }
+    }
+  });
+}
+</script>
+
+  <body>
+
+    <form action="/">
+      <fieldset>
+        <legend>Test Systems</legend>
+        <button type="button" id="testbutton" onclick="myTest()">Test!</button>
+      </fieldset>
+    </form>
+
+    <form action="/">
+      <fieldset>
+        <legend>Upload photo</legend>
+        <input type="file" name="photo" id="photo">
+        <button type="button" onclick="upload()">Upload</button>
+        <input style="width: 600px;" type="text"  id="ipfsAddress">
+        <button type="button" onclick="makeDeed()">Create NFT Deed</button>
+      </fieldset>
+    </form>
+
+
+      <fieldset>
+        <legend>Your Deeds</legend>
+        <div id="box">
+      </div>
+      </fieldset>
+
+      <script type="text/javascript" >
+      var rows = [{
+          name: "John",
+          age: 20,
+          email: "xx@hotmail.com"
+      }, {
+          name: "Jack",
+          age: 50,
+          email: "xxx@hotmail.com"
+      }, {
+          name: "Son",
+          age: 45,
+          email: "xxxx@hotmail.com"
+      }];
+
+      var html = "<table border='1|1'>";
+      for (var i = 0; i < rows.length; i++) {
+          html+="<tr>";
+          html+="<td>"+rows[i].name+"</td>";
+          html+="<td>"+rows[i].age+"</td>";
+          html+="<td>"+rows[i].email+"</td>";
+          html+="</tr>";
+
+      }
+      html+="</table>";
+      document.getElementById("box").innerHTML = html;
+      </script>
+
+    </br>
+    </br>
+    <a id="url"></a>
+    </br>
+    </br>
+    <img id="output">
+  </body>
+</html>

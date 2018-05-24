@@ -6,7 +6,7 @@ ignoreMetamask = true;
 
 // use remix to deploy.
 var contractAddresses = {
-    'IPFS-Ganache': '0x5d3bd29ec2cf70697b004673765b82001d7d26f2',
+    'IPFS-Ganache': '0xa208d316a9dbea6885e36a8254ca19f644d51444',
     'DLand-Ganache': '0xcaf22b02250339642e73e6a3a2d9dc53653a30e8',
     'DLand-Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'
 };
@@ -139,7 +139,7 @@ var EthereumConnection = {
   		ethlocal = new Eth(web3js.currentProvider);
     }
 
-    var ethlocal = new Eth(web3js.currentProvider);
+    //var ethlocal = new Eth(web3js.currentProvider);
   	var contractAbi = ethlocal.contract(contractABI);
   	var contract = contractAbi.at(contractAddress);
     return contract;
