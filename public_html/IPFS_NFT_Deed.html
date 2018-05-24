@@ -12,7 +12,7 @@
     crossorigin="anonymous"></script><!-- for the ipfs Interface -->
     <script type="text/javascript" src="js/web3.js"></script>
     <script type="text/javascript" src="js/ethjs.js"></script>
-
+  <script type="text/javascript" src="js/BN.js"></script>
 
     <script type= "text/javascript" src="js/IPFSContractABI.js"></script>
     <script type= "text/javascript" src="js/ETHCommon.js"></script>
@@ -20,7 +20,32 @@
 
   </head>
   <script type="text/javascript">
-    function upload() {
+  function makeDeed(id)
+  {
+    // mint(  uint256 _id ,string ipfsAddress) payable external
+    var ipfshash = document.getElementById("url").innerHTML;
+    var accaddress = GetAccountAddress();
+    var contract = EthereumConnection.GetContract("IPFS");
+
+
+    var EthinWei = 1000000000000000000; // This is 1 ETH
+    var price = 0.01*EthinWei;
+    var bn = new BN(id,10);
+
+
+    contract.mint(id,ipfshash, {from: accaddress, value: price,  gas: 1000000},function(err, res){
+      if (err)
+      {
+        console.log('Failed to mint, because:' + String(err));
+      }
+      else
+      {
+        console.log('Minted' + String(res));
+      }
+    });
+  }
+    function upload()
+    {
       const reader = new FileReader();
       reader.onloadend = function() {
         const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
@@ -168,22 +193,20 @@ GetDeedCount();
         <input type="file" name="photo" id="photo">
         <button type="button" onclick="upload()">Upload</button>
         <input style="width: 600px;" type="text"  id="ipfsAddress">
-        <button type="button" onclick="makeDeed()">Create NFT Deed</button>
+        <button type="button" onclick="makeDeed(12345)">Create NFT Deed</button>
       </fieldset>
     </form>
 
 
       <fieldset>
         <legend>Your Deeds</legend>
-          <button type="button" onclick="UpdateDeedTable()">Update</button>
+          <button type="button" onclick="GetDeedCount()">Update</button>
 
         <div id="box">
       </div>
 
   <div id="deedbox">
   </div>
-
-
 
     <script type="text/javascript" >
     function consoleLog(thisString)

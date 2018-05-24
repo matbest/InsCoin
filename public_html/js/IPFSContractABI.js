@@ -296,8 +296,8 @@ ContractABI = [
 	},
 	{
 		"inputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "constructor"
 	},
 	{
