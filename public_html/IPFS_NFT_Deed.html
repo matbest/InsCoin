@@ -72,14 +72,99 @@ function myTest()
 
     <form action="/">
       <fieldset>
-        <legend>Test Systems</legend>
+        <legend>System Info</legend>
         <button type="button" id="testbutton" onclick="myTest()">Test!</button>
+        <div id="sysinfo">
+      </div>
       </fieldset>
+
+    <script>
+    var myDeedCount = 0;
+    var myDeeds = [];
+    function whoami()
+    {
+      return GetAccountAddress();
+    }
+    function GetDeedCount()
+    {
+      /// --
+      var accaddress = GetAccountAddress();
+      var contract = EthereumConnection.GetContract("IPFS");
+      contract.balanceOf(accaddress,function(err, res){
+        if (err)
+        {
+          console.log('error' + String(err));
+          consoleLog(String(err));
+        }
+        else
+        {
+          var value = res[0];
+          myDeedCount =value.toNumber();
+          consoleLog('you have ' + String(res));
+          UpdateDeedTable();
+        }
+      });
+    }
+  function UpdateDeedTable()
+  {
+    myDeeds = [];
+    for (var i = 0; i <myDeedCount-1; i++)
+      putDeedInTable(i,false);
+    putDeedInTable(i,true);
+  }
+  function renderDeedTable()
+  {
+    var html = "<table border='1|1'>";
+    // loop through the deeds.
+    for (var i = 0; i <myDeeds.length; i++)
+    {
+      var elem = myDeeds[i];
+      console.log(elem.name, elem.value);
+
+      html+="<tr>";
+      var num = elem.index;
+      html+="<td>"+num.toString();+"</td>";
+      html+="<td>"+elem.value+"</td>";
+      html+="<td>"+"QWERWQE"+"</td>";
+      html+="</tr>";
+
+    }
+    html+="</table>";
+    document.getElementById("deedbox").innerHTML = html;
+
+  }
+  function putDeedInTable(id, last)
+  {
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.tokenOfOwnerByIndex(accaddress, id,function(err, res){
+      if (err)
+      {
+        console.log('error' + String(err));
+        consoleLog(String(err));
+      }
+      else
+      {
+        //myDeeds[id] = String(res)
+
+        myDeeds.push({index: id, value:  String(res[0])});
+        consoleLog('you have ' + String(res));
+        if (last == true)
+        {
+        renderDeedTable();
+        }
+      }
+    });
+
+  }
+GetDeedCount();
+    document.getElementById("sysinfo").innerHTML = "You Account ID is " + whoami() ;
+    </script>
     </form>
 
     <form action="/">
       <fieldset>
-        <legend>Upload photo</legend>
+        <legend>Create Deed</legend>
         <input type="file" name="photo" id="photo">
         <button type="button" onclick="upload()">Upload</button>
         <input style="width: 600px;" type="text"  id="ipfsAddress">
@@ -90,43 +175,64 @@ function myTest()
 
       <fieldset>
         <legend>Your Deeds</legend>
+          <button type="button" onclick="UpdateDeedTable()">Update</button>
+
         <div id="box">
       </div>
+
+  <div id="deedbox">
+  </div>
+
+
+
+    <script type="text/javascript" >
+    function consoleLog(thisString)
+    {
+      console.log(thisString);
+
+      var oldcontent = document.getElementById("console").innerHTML;
+      var html = thisString + "<br>" + oldcontent;
+      document.getElementById("console").innerHTML = html;
+    }
+    function myGetCount()
+    {
+      consoleLog("GetCount");
+    }
+    function myTest()
+    {
+      myGetCount()
+      var contract = EthereumConnection.GetContract("IPFS");
+      contract.balancesOf(function(err, res){
+        if (err)
+        {
+            document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
+        }
+        else
+        {
+          price = Number(res[0]);
+          if (price == 10000000000000000)
+            document.getElementById("testbutton").innerHTML = "OK!";
+            else {
+              document.getElementById("testbutton").innerHTML = "C Error!";
+            }
+        }
+      });
+    }
+
+    </script>
       </fieldset>
 
-      <script type="text/javascript" >
-      var rows = [{
-          name: "John",
-          age: 20,
-          email: "xx@hotmail.com"
-      }, {
-          name: "Jack",
-          age: 50,
-          email: "xxx@hotmail.com"
-      }, {
-          name: "Son",
-          age: 45,
-          email: "xxxx@hotmail.com"
-      }];
-
-      var html = "<table border='1|1'>";
-      for (var i = 0; i < rows.length; i++) {
-          html+="<tr>";
-          html+="<td>"+rows[i].name+"</td>";
-          html+="<td>"+rows[i].age+"</td>";
-          html+="<td>"+rows[i].email+"</td>";
-          html+="</tr>";
-
-      }
-      html+="</table>";
-      document.getElementById("box").innerHTML = html;
-      </script>
 
     </br>
     </br>
     <a id="url"></a>
     </br>
     </br>
+      <fieldset>
+      <legend>Log</legend>
+      </div>
+      <div id="console">
+      </fieldset>
     <img id="output">
   </body>
 </html>
