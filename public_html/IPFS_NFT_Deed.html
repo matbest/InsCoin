@@ -142,20 +142,44 @@ function myTest()
       putDeedInTable(i,true);
     }
   }
+
+  function GetIPFSData(count,id)
+  {
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.GetIPFSAddress( id,function(err, res){
+      if (err)
+      {
+        consoleLog("** [Error] GetIPFSFromToken ** " + String(err));
+      }
+      else
+      {
+        myDeeds.push({index: count, value:  String(id), ipfs: String(res[0])});
+        renderDeedTable();
+      }
+    });
+
+  }
+
   function renderDeedTable()
   {
     var html = "<table border='1|1'>";
+    html+="<tr>";
+    html+="<td>"+"Index"+"</td>";
+    html+="<td>"+"Token ID"+"</td>";
+    html+="<td>"+"IPFs Link"+"</td>";
+    html+="</tr>";
+
     // loop through the deeds.
     for (var i = 0; i <myDeeds.length; i++)
     {
       var elem = myDeeds[i];
-      console.log(elem.name, elem.value);
-
-      html+="<tr>";
       var num = elem.index;
+      var ipfs = elem.ipfs;
+      html+="<tr>";
       html+="<td>"+num.toString();+"</td>";
       html+="<td>"+elem.value+"</td>";
-      html+="<td>"+"QWERWQE"+"</td>";
+      html+="<td>"+ipfs+"</td>";
       html+="</tr>";
 
     }
@@ -170,17 +194,13 @@ function myTest()
     contract.tokenOfOwnerByIndex(accaddress, id,function(err, res){
       if (err)
       {
-        console.log('error' + String(err));
-        consoleLog("** [Error] puitDeedInTable ** " + String(err));
+        consoleLog("** [Error] putDeedInTable ** " + String(err));
       }
       else
       {
-        myDeeds.push({index: id, value:  String(res[0])});
-        consoleLog('you have ' + String(res));
-        if (last == true)
-        {
-        renderDeedTable();
-        }
+        var index = res[0];
+        count = id;
+        GetIPFSData(count, index);
       }
     });
 
