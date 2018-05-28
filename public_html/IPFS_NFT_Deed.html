@@ -148,14 +148,13 @@ function myTest()
         {
           var value = res[0];
           myDeedCount =value.toNumber();
-          //consoleLog('You have ' + value.toString() + " Deed/s");
-          //UpdateDeedTable();
         }
       });
     }
   function UpdateDeedTable()
   {
     GetDeedCount();
+    consoleLog("My DeedCount is " + myDeedCount);
     myDeeds = [];
     if (myDeedCount >0)
     {
@@ -209,6 +208,7 @@ function myTest()
       }
       else
       {
+        consoleLog("Deed Burnt");
         UpdateDeedTable();
         renderDeedTable();
       }
