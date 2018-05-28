@@ -116,7 +116,7 @@ function myTest()
     {
       /// --
       var accaddress = GetAccountAddress();
-      var contract = EthereumConnection.GetContract("/js/IPFS");
+      var contract = EthereumConnection.GetContract("IPFS");
       contract.balanceOf(accaddress,function(err, res){
         if (err)
         {
@@ -127,7 +127,7 @@ function myTest()
         {
           var value = res[0];
           myDeedCount =value.toNumber();
-          consoleLog('you have ' + String(res));
+          consoleLog('you have ' + value.toString() + " Deed/s");
           UpdateDeedTable();
         }
       });
