@@ -20,8 +20,10 @@
 
   </head>
   <script type="text/javascript">
-  function makeDeed(id)
+  function makeDeed()
   {
+    id = 1234234;
+    //id = Math.random(1000000000000);
     // mint(  uint256 _id ,string ipfsAddress) payable external
     var ipfshash = document.getElementById("url").innerHTML;
     var accaddress = GetAccountAddress();
@@ -47,7 +49,8 @@
     function upload()
     {
       const reader = new FileReader();
-      reader.onloadend = function() {
+      reader.onloadend = function()
+      {
         const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
         const buf = buffer.Buffer(reader.result) // Convert data into buffer
         ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
@@ -58,6 +61,7 @@
             return
           }
           let url = `https://ipfs.io/ipfs/${result[0].hash}`
+
           let ipfsaddess = result[0].hash;
           console.log(`Url --> ${url}`)
           document.getElementById("ipfsAddress").value= ipfsaddess;
@@ -128,18 +132,18 @@ function myTest()
           var value = res[0];
           myDeedCount =value.toNumber();
           consoleLog('You have ' + value.toString() + " Deed/s");
-          UpdateDeedTable();
+          //UpdateDeedTable();
         }
       });
     }
   function UpdateDeedTable()
   {
+    GetDeedCount();
     myDeeds = [];
     if (myDeedCount >0)
     {
-      for (var i = 0; i <myDeedCount-1; i++)
-        putDeedInTable(i,false);
-      putDeedInTable(i,true);
+      for (var i = 0; i <myDeedCount; i++)
+        putDeedInTable(i);
     }
   }
 
@@ -160,7 +164,23 @@ function myTest()
     });
 
   }
+  function Burn(id)
+  {
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.burn(accaddress, id,{from: accaddress, value: 0,  gas: 1000000},function(err, res){
+      if (err)
+      {
+        consoleLog("** [Error] Burn ** " + String(err));
+      }
+      else
+      {
+        UpdateDeedTable();
+        renderDeedTable();
+      }
+    });
 
+  }
   function renderDeedTable()
   {
     var html = "<table border='1|1'>";
@@ -175,11 +195,13 @@ function myTest()
     {
       var elem = myDeeds[i];
       var num = elem.index;
+      var tokenid = elem.value;
       var ipfs = elem.ipfs;
       html+="<tr>";
       html+="<td>"+num.toString();+"</td>";
-      html+="<td>"+elem.value+"</td>";
+      html+="<td>"+tokenid+"</td>";
       html+="<td>"+ipfs+"</td>";
+      html+="<td> <button type=\"button\" onclick=\"Burn("+tokenid+")\">Burn</button> </td>";
       html+="</tr>";
 
     }
@@ -187,7 +209,7 @@ function myTest()
     document.getElementById("deedbox").innerHTML = html;
 
   }
-  function putDeedInTable(id, last)
+  function putDeedInTable(id)
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
@@ -216,14 +238,14 @@ GetDeedCount();
         <input type="file" name="photo" id="photo">
         <button type="button" onclick="upload()">Upload</button>
         <input style="width: 600px;" type="text"  id="ipfsAddress">
-        <button type="button" onclick="makeDeed(12345)">Create NFT Deed</button>
+        <button type="button" onclick="makeDeed()">Create NFT Deed</button>
       </fieldset>
     </form>
 
 
       <fieldset>
         <legend>Your Deeds</legend>
-          <button type="button" onclick="GetDeedCount()">Update</button>
+          <button type="button" onclick="UpdateDeedTable()">Update</button>
 
         <div id="box">
       </div>
