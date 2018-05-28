@@ -20,9 +20,26 @@
 
   </head>
   <script type="text/javascript">
+  function timenow(){
+      var now= new Date(),
+      ampm= 'am',
+      h= now.getHours(),
+      m= now.getMinutes(),
+      s= now.getSeconds();
+      if(h>= 12){
+          if(h>12) h -= 12;
+          ampm= 'pm';
+      }
+
+      if(m<10) m= '0'+m;
+      if(s<10) s= '0'+s;
+      return now.toLocaleDateString()+ ' ' + h + ':' + m + ':' + s + ' ' + ampm;
+  }
   function makeDeed()
   {
-    id = 1234234;
+    var seedtring = timenow();
+    var sha3random = web3.sha3(seedtring);
+    var blah = web3.toBigNumber(sha3random,16);
     //id = Math.random(1000000000000);
     // mint(  uint256 _id ,string ipfsAddress) payable external
     var ipfshash = document.getElementById("url").innerHTML;
@@ -32,10 +49,9 @@
 
     var EthinWei = 1000000000000000000; // This is 1 ETH
     var price = 0.01*EthinWei;
-    var bn = new BN(id,10);
 
 
-    contract.mint(id,ipfshash, {from: accaddress, value: price,  gas: 1000000},function(err, res){
+    contract.mint(blah,ipfshash, {from: accaddress, value: price,  gas: 1000000},function(err, res){
       if (err)
       {
         console.log('Failed to mint, because:' + String(err));
@@ -43,6 +59,7 @@
       else
       {
         console.log('Minted' + String(res));
+        UpdateDeedTable();
       }
     });
   }
@@ -131,7 +148,7 @@ function myTest()
         {
           var value = res[0];
           myDeedCount =value.toNumber();
-          consoleLog('You have ' + value.toString() + " Deed/s");
+          //consoleLog('You have ' + value.toString() + " Deed/s");
           //UpdateDeedTable();
         }
       });
@@ -147,28 +164,45 @@ function myTest()
     }
   }
 
-  function GetIPFSData(count,id)
+  function GetIPFSData(count,tokenID)
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
-    contract.GetIPFSAddress( id,function(err, res){
+    contract.GetIPFSAddress( tokenID,function(err, res){
       if (err)
       {
         consoleLog("** [Error] GetIPFSFromToken ** " + String(err));
       }
       else
       {
-        myDeeds.push({index: count, value:  String(id), ipfs: String(res[0])});
+        myDeeds.push({index: count, tokenID:  tokenID, ipfs: String(res[0])});
         renderDeedTable();
       }
     });
 
   }
-  function Burn(id)
+  function BurnIndex(index)
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
-    contract.burn(accaddress, id,{from: accaddress, value: 0,  gas: 1000000},function(err, res){
+    contract.tokenOfOwnerByIndex(accaddress, index,function(err, res){
+      if (err)
+      {
+        consoleLog("** [Error] BurnIndex ** " + String(err));
+      }
+      else
+      {
+        var tokenID = res[0];
+        Burn(tokenID);
+      }
+    });
+  }
+
+  function Burn(tokenID)
+  {
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.burn(accaddress, tokenID,{from: accaddress, value: 0,  gas: 1000000},function(err, res){
       if (err)
       {
         consoleLog("** [Error] Burn ** " + String(err));
@@ -183,7 +217,9 @@ function myTest()
   }
   function renderDeedTable()
   {
-    var html = "<table border='1|1'>";
+    var intro = "You have " +   myDeedCount + "Deeds on record";
+
+    var html = intro + " <br> " + "<table border='1|1'>";
     html+="<tr>";
     html+="<td>"+"Index"+"</td>";
     html+="<td>"+"Token ID"+"</td>";
@@ -194,14 +230,14 @@ function myTest()
     for (var i = 0; i <myDeeds.length; i++)
     {
       var elem = myDeeds[i];
-      var num = elem.index;
-      var tokenid = elem.value;
+      var index = elem.index;
+      var tokenid = elem.tokenID;
       var ipfs = elem.ipfs;
       html+="<tr>";
-      html+="<td>"+num.toString();+"</td>";
+      html+="<td>"+index.toString();+"</td>";
       html+="<td>"+tokenid+"</td>";
       html+="<td>"+ipfs+"</td>";
-      html+="<td> <button type=\"button\" onclick=\"Burn("+tokenid+")\">Burn</button> </td>";
+      html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
       html+="</tr>";
 
     }
@@ -209,25 +245,24 @@ function myTest()
     document.getElementById("deedbox").innerHTML = html;
 
   }
-  function putDeedInTable(id)
+  function putDeedInTable(count)
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
-    contract.tokenOfOwnerByIndex(accaddress, id,function(err, res){
+    contract.tokenOfOwnerByIndex(accaddress, count,function(err, res){
       if (err)
       {
         consoleLog("** [Error] putDeedInTable ** " + String(err));
       }
       else
       {
-        var index = res[0];
-        count = id;
-        GetIPFSData(count, index);
+        var tokenID = res[0];
+        GetIPFSData(count, tokenID);
       }
     });
 
   }
-GetDeedCount();
+  GetDeedCount();
     document.getElementById("sysinfo").innerHTML = "You Account ID is " + whoami() ;
     </script>
     </form>
