@@ -120,14 +120,14 @@ function myTest()
       contract.balanceOf(accaddress,function(err, res){
         if (err)
         {
-          consoleLog("**Ethereum Contract**" + String(err));
+          consoleLog("**[Error] Ethereum Contract**" + String(err));
           console.log('error' + String(err));
         }
         else
         {
           var value = res[0];
           myDeedCount =value.toNumber();
-          consoleLog('you have ' + value.toString() + " Deed/s");
+          consoleLog('You have ' + value.toString() + " Deed/s");
           UpdateDeedTable();
         }
       });
@@ -135,9 +135,12 @@ function myTest()
   function UpdateDeedTable()
   {
     myDeeds = [];
-    for (var i = 0; i <myDeedCount-1; i++)
-      putDeedInTable(i,false);
-    putDeedInTable(i,true);
+    if (myDeedCount >0)
+    {
+      for (var i = 0; i <myDeedCount-1; i++)
+        putDeedInTable(i,false);
+      putDeedInTable(i,true);
+    }
   }
   function renderDeedTable()
   {
@@ -168,7 +171,7 @@ function myTest()
       if (err)
       {
         console.log('error' + String(err));
-        consoleLog(String(err));
+        consoleLog("** [Error] puitDeedInTable ** " + String(err));
       }
       else
       {
