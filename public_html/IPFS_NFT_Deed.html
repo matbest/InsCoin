@@ -12,7 +12,7 @@
     crossorigin="anonymous"></script><!-- for the ipfs Interface -->
     <script type="text/javascript" src="js/web3.js"></script>
     <script type="text/javascript" src="js/ethjs.js"></script>
-  <script type="text/javascript" src="js/BN.js"></script>
+    <script type="text/javascript" src="js/BN.js"></script>
 
     <script type= "text/javascript" src="js/IPFSContractABI.js"></script>
     <script type= "text/javascript" src="js/ETHCommon.js"></script>
@@ -51,8 +51,10 @@
         const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
         const buf = buffer.Buffer(reader.result) // Convert data into buffer
         ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
-          if(err) {
+          if(err)
+          {
             console.error(err)
+            consoleLog("**IPFS** not available: " + err);
             return
           }
           let url = `https://ipfs.io/ipfs/${result[0].hash}`
@@ -114,12 +116,12 @@ function myTest()
     {
       /// --
       var accaddress = GetAccountAddress();
-      var contract = EthereumConnection.GetContract("IPFS");
+      var contract = EthereumConnection.GetContract("/js/IPFS");
       contract.balanceOf(accaddress,function(err, res){
         if (err)
         {
+          consoleLog("**Ethereum Contract**" + String(err));
           console.log('error' + String(err));
-          consoleLog(String(err));
         }
         else
         {
@@ -170,8 +172,6 @@ function myTest()
       }
       else
       {
-        //myDeeds[id] = String(res)
-
         myDeeds.push({index: id, value:  String(res[0])});
         consoleLog('you have ' + String(res));
         if (last == true)
@@ -209,23 +209,24 @@ GetDeedCount();
   </div>
 
     <script type="text/javascript" >
+
     function consoleLog(thisString)
     {
       console.log(thisString);
-
       var oldcontent = document.getElementById("console").innerHTML;
       var html = thisString + "<br>" + oldcontent;
       document.getElementById("console").innerHTML = html;
     }
     function myGetCount()
     {
-      consoleLog("GetCount");
+    //  consoleLog("GetCount");
     }
     function myTest()
     {
       myGetCount()
       var contract = EthereumConnection.GetContract("IPFS");
-      contract.balancesOf(function(err, res){
+
+      contract.GetMintPrice(function(err, res){
         if (err)
         {
             document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";

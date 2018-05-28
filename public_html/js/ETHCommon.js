@@ -1,4 +1,4 @@
-// --
+  // --
 // false = connect direct to localhost
 // true = connect to web3 through MetaMask
 // --
@@ -6,7 +6,7 @@ ignoreMetamask = true;
 
 // use remix to deploy.
 var contractAddresses = {
-    'IPFS-Ganache': '0x1e172369189bdf35d0ab383c980c552c349dfedf',
+    'IPFS-Ganache': '0xa208d316a9dbea6885e36a8254ca19f644d51444',
     'DLand-Ganache': '0xcaf22b02250339642e73e6a3a2d9dc53653a30e8',
     'DLand-Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'
 };
@@ -78,14 +78,23 @@ function GetNetworkVersion()
 
 function GetAccountAddress()
 {
+  if (!web3.isConnected() )
+  {
+    consoleLog("**Ethererum Not Conencted**");
+    return 0;
+  }
+
+  var accountAddress;
 	if (ignoreMetamask == true)
 	{
-		return '0x7099B34900d2A33AA124fc5bA2a8a90E5dD5EBE1';
+		accountAddress=  '0x7099B34900d2A33AA124fc5bA2a8a90E5dD5EBE1';
 	}
 	else
 	{
-		return web3.eth.accounts[0];
+		accountAddress= web3.eth.accounts[0];
 	}
+  //web3.utils.isAddress(accountAddress);
+  return accountAddress;
 }
 
 var EthereumConnection = {
@@ -107,8 +116,8 @@ var EthereumConnection = {
   {
     var networkName = GetNetworkVersion();
     var contractAddress = this.GetContractAddress(networkName,contractName);
-    var fullcontractname = contractName + "ContractABI.js" // make sure you've saved the ABI defn in this file.
-    loadScript(fullcontractname);
+    //var fullcontractname = contractName + "ContractABI.js" // make sure you've saved the ABI defn in this file.
+  //  loadScript(fullcontractname);
     var plotContract = this.loadContract(contractAddress, ContractABI);
     if (plotContract != 'undefined')
       this.connected = true;
