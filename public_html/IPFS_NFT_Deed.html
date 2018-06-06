@@ -5,8 +5,12 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 
-
-    <script src="https://wzrd.in/standalone/buffer"></script><!-- for the buffer -->
+  <!--
+  <script src="https://wzrd.in/standalone/buffer"></script>
+  -->
+  <script src="js/browserify/buffer.js">
+</script>
+  <!-- for the buffer -->
     <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"
     integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
     crossorigin="anonymous"></script><!-- for the ipfs Interface -->
@@ -20,6 +24,8 @@
 
   </head>
   <script type="text/javascript">
+  // var Buffer = require('buffer/').Buffer  // note: the trailing slash is important!
+
   function timenow(){
       var now= new Date(),
       ampm= 'am',
@@ -297,30 +303,35 @@ function myTest()
       var html = thisString + "<br>" + oldcontent;
       document.getElementById("console").innerHTML = html;
     }
-    function myGetCount()
-    {
-    //  consoleLog("GetCount");
-    }
+
     function myTest()
     {
-      myGetCount()
-      var contract = EthereumConnection.GetContract("IPFS");
 
-      contract.GetMintPrice(function(err, res){
-        if (err)
-        {
-            document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
-        }
-        else
-        {
-          price = Number(res[0]);
-          if (price == 10000000000000000)
-            document.getElementById("testbutton").innerHTML = "OK!";
-            else {
-              document.getElementById("testbutton").innerHTML = "C Error!";
-            }
-        }
-      });
+      if(!web3.isConnected() || true)
+      {
+          consoleLog("**Web3** Is connected");
+        var contract = EthereumConnection.GetContract("IPFS");
+
+        contract.GetMintPrice(function(err, res){
+          if (err)
+          {
+              document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
+          }
+          else
+          {
+            price = Number(res[0]);
+            if (price == 10000000000000000)
+              document.getElementById("testbutton").innerHTML = "OK!";
+              else {
+                document.getElementById("testbutton").innerHTML = "C Error!";
+              }
+          }
+        });
+      }
+      else {
+        consoleLog("**Web3** Not connected");
+        document.getElementById("testbutton").innerHTML = "Web3 Not Connected";
+      }
     }
 
     </script>
