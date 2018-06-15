@@ -41,6 +41,21 @@
       if(s<10) s= '0'+s;
       return now.toLocaleDateString()+ ' ' + h + ':' + m + ':' + s + ' ' + ampm;
   }
+
+  function timeConverter(UNIX_timestamp)
+  {
+  var a = new Date(UNIX_timestamp * 1000);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = a.getFullYear();
+  var month = months[a.getMonth()];
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var sec = a.getSeconds();
+  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+  return time;
+  }
+
   function makeDeed()
   {
     var seedtring = timenow();
@@ -187,7 +202,7 @@ function myTest()
       }
       else
       {
-        myDeeds.push({index: count, tokenID:  tokenID, ipfs: String(res[0]), creationTime: 1529087940, description: "a desciption"});
+        myDeeds.push({index: count, tokenID:  tokenID, ipfs: String(res[0]), creationTime: timeConverter(1529087940), description: "a desciption", minter: "minterID"});
         renderDeedTable();
       }
     });
@@ -237,6 +252,7 @@ function myTest()
     html+="<td>"+"Token ID"+"</td>";
     html+="<td>"+"IPFs Link"+"</td>";
     html+="<td>"+"Created at"+"</td>";
+    html+="<td>"+"Created by"+"</td>";
     html+="<td>"+"Description"+"</td>";
     html+="</tr>";
 
@@ -248,14 +264,16 @@ function myTest()
       var tokenid = elem.tokenID;
       var ipfs = elem.ipfs;
       var creationTime = elem.creationTime;
+      var mintedBy = elem.minter;
       var desc = elem.description
       html+="<tr>";
       html+="<td>"+index.toString();+"</td>";
       html+="<td>"+tokenid+"</td>";
-      html+="<td>"+creationTime+"</td>";
-      html+="<td>"+desc+"</td>";
-      html+="<td>"+"<a href = "+ipfs+">"+ipfs+"</a></td>";
 
+      html+="<td>"+"<a href = "+ipfs+">"+ipfs+"</a></td>";
+      html+="<td>"+creationTime+"</td>";
+      html+="<td>"+mintedBy+"</td>";
+      html+="<td>"+desc+"</td>";
       html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
       html+="</tr>";
 
