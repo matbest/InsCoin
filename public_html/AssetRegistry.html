@@ -227,6 +227,28 @@ function myTest()
 
   }
 
+  function GetMinterData(tokenID)
+  {
+    
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.GetTokenMinter( tokenID,function(err, res){
+      var minterString = "minter"+tokenID.toString();
+      if (err)
+      {
+        consoleErrorLog("** [Error] GetDescriptionData ** " + String(err));
+        document.getElementById(minterString).innerHTML = "Error retrieving minter";
+      }
+      else
+      {
+        document.getElementById(minterString).innerHTML = String(res[0]);
+      }
+    });
+
+  }
+
+
+
   function BurnIndex(index)
   {
     var contract = EthereumConnection.GetContract("IPFS");
@@ -287,18 +309,20 @@ function myTest()
       var desc = elem.description;
 
       var descString = "desc"+tokenid.toString();
+      var minterString = "minter"+tokenid.toString();
       html+="<tr>";
       html+="<td>"+index.toString();+"</td>";
       html+="<td>"+tokenid+"</td>";
 
       html+="<td>"+"<a href = "+ipfs+">"+ipfs+"</a></td>";
       html+="<td>"+creationTime+"</td>";
-      html+="<td>"+mintedBy+"</td>";
+      html+="<td id = \""+ minterString+ "\">"+mintedBy+"</td>";
       html+="<td id = \""+ descString+ "\">"+desc+"</td>";
       html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
       html+="</tr>";
 
       GetDescriptionData(tokenid);
+      GetMinterData(tokenid);
 
     }
     html+="</table>";
