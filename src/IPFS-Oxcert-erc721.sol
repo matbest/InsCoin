@@ -3,15 +3,22 @@ pragma solidity ^0.4.10;
 
 import 'https://github.com/0xcert/ethereum-erc721/contracts/tokens/NFTokenEnumerable.sol';
 
-contract muyIPFSToken is NFTokenEnumerable
+contract myIPFSToken is NFTokenEnumerable
 {
-     // Payment stuff -- //
 
 
     uint256 myEthinwei = 1000000000000000000; // This is 1 ETH
     mapping(address => uint) public balances;
     uint256 myMintPrice;
-    mapping (uint256 => Plot  ) myPlots;
+    mapping (uint256 => NFTObject  ) myNFTObjects;
+
+    struct NFTObject
+    {
+        string myAddress;
+        string myDescription;
+        address myMintedBy;
+        uint256 myCreationTime;
+    }
 
  constructor ()
     NFTokenEnumerable()
@@ -28,14 +35,15 @@ contract muyIPFSToken is NFTokenEnumerable
    * @param _owner NFToken owner address.
    * @param _id Unique NFToken ID.
    */
-  function mint(  uint256 _id ,string ipfsAddress) public payable
+  function mint(  uint256 _id ,string ipfsAddress, string description) public payable
   {
         require(msg.value == myMintPrice);
-        Plot storage plot = myPlots[_id];
-        plot.myAddress = ipfsAddress;
+        NFTObject storage tmp = myNFTObjects[_id];
+        tmp.myAddress = ipfsAddress;
+        tmp.myMintedBy = msg.sender;
+        tmp.myCreationTime = now;
+        tmp.myDescription = description;
         super._mint(msg.sender, _id);
-
-
   }
 
   /* Burns a NFToken. NFToken already implements internal _burn
@@ -54,12 +62,28 @@ contract muyIPFSToken is NFTokenEnumerable
     super._burn(_owner, _tokenId);
   }
 
-    function GetIPFSAddress( uint256 tokenID) public view returns (string)
+    /* These are the functions to retrieve the content of the tokens */
+    function GetTokenIPFSAddress( uint256 tokenID) public view returns (string)
     {
-        return myPlots[tokenID].myAddress;
+        return myNFTObjects[tokenID].myAddress;
     }
 
-        function GetMintPrice() view external  returns(uint256)
+    function GetTokenDescription( uint256 tokenID) public view returns (string)
+    {
+        return myNFTObjects[tokenID].myDescription;
+    }
+
+    function GetTokenCreationTime( uint256 tokenID) public view returns (uint256)
+    {
+        return myNFTObjects[tokenID].myCreationTime;
+    }
+       function GetTokenMinter( uint256 tokenID) public view returns (address)
+    {
+        return myNFTObjects[tokenID].myMintedBy;
+    }
+
+    /*What is the Eth Mint Price*/
+    function GetMintPriceInWEI() view external  returns(uint256)
     {
         return myMintPrice ;
     }
@@ -86,13 +110,7 @@ contract muyIPFSToken is NFTokenEnumerable
         return true;
     }
 
-    // -- Payment stuff -- //
 
-    struct Plot
-    {
-        string myAddress;
-        address mintedBy;
-    }
 
     /*** STORAGE ***/
 

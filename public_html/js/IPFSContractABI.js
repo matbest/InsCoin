@@ -53,20 +53,6 @@ ContractABI = [
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "deposit",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -80,7 +66,7 @@ ContractABI = [
 				"type": "address"
 			},
 			{
-				"indexed": false,
+				"indexed": true,
 				"name": "_tokenId",
 				"type": "uint256"
 			}
@@ -102,7 +88,7 @@ ContractABI = [
 				"type": "address"
 			},
 			{
-				"indexed": false,
+				"indexed": true,
 				"name": "_tokenId",
 				"type": "uint256"
 			}
@@ -136,11 +122,29 @@ ContractABI = [
 		"constant": false,
 		"inputs": [
 			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "deposit",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "_id",
 				"type": "uint256"
 			},
 			{
 				"name": "ipfsAddress",
+				"type": "string"
+			},
+			{
+				"name": "description",
 				"type": "string"
 			}
 		],
@@ -164,10 +168,6 @@ ContractABI = [
 			{
 				"name": "_tokenId",
 				"type": "uint256"
-			},
-			{
-				"name": "_data",
-				"type": "bytes"
 			}
 		],
 		"name": "safeTransferFrom",
@@ -190,6 +190,10 @@ ContractABI = [
 			{
 				"name": "_tokenId",
 				"type": "uint256"
+			},
+			{
+				"name": "_data",
+				"type": "bytes"
 			}
 		],
 		"name": "safeTransferFrom",
@@ -373,13 +377,46 @@ ContractABI = [
 	},
 	{
 		"constant": true,
+		"inputs": [],
+		"name": "GetMintPriceInWEI",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
 		"inputs": [
 			{
 				"name": "tokenID",
 				"type": "uint256"
 			}
 		],
-		"name": "GetIPFSAddress",
+		"name": "GetTokenCreationTime",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "tokenID",
+				"type": "uint256"
+			}
+		],
+		"name": "GetTokenDescription",
 		"outputs": [
 			{
 				"name": "",
@@ -392,12 +429,36 @@ ContractABI = [
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "GetMintPrice",
+		"inputs": [
+			{
+				"name": "tokenID",
+				"type": "uint256"
+			}
+		],
+		"name": "GetTokenIPFSAddress",
 		"outputs": [
 			{
 				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "tokenID",
 				"type": "uint256"
+			}
+		],
+		"name": "GetTokenMinter",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
 			}
 		],
 		"payable": false,

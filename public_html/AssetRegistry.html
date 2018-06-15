@@ -60,11 +60,11 @@
     contract.mint(blah,ipfshash, {from: accaddress, value: price,  gas: 1000000},function(err, res){
       if (err)
       {
-        console.log('Failed to mint, because:' + String(err));
+        consoleErrorLog('Failed to mint, because:' + String(err));
       }
       else
       {
-        console.log('Minted' + String(res));
+        consoleLog('Minted ERC721 Deed on transaction ' + String(res));
         UpdateDeedTable();
       }
     });
@@ -80,7 +80,7 @@
           if(err)
           {
             console.error(err)
-            consoleLog("**IPFS** not available: " + err);
+            consoleErrorLog("**IPFS** not available: " + err);
             return
           }
           let url = `https://ipfs.io/ipfs/${result[0].hash}`
@@ -104,7 +104,7 @@ function myTest()
 {
 
   var contract = EthereumConnection.GetContract("IPFS");
-  contract.GetMintPrice(function(err, res){
+  contract.GetMintPriceInWEI(function(err, res){
     if (err)
     {
         document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
@@ -139,7 +139,8 @@ function myTest()
     {
       return GetAccountAddress();
     }
-    function GetDeedCount()
+
+    function GetDeedCount(refreshcallback)
     {
       /// --
       var accaddress = GetAccountAddress();
@@ -147,40 +148,46 @@ function myTest()
       contract.balanceOf(accaddress,function(err, res){
         if (err)
         {
-          consoleLog("**[Error] Ethereum Contract**" + String(err));
+          consoleErrorLog("**[Error] Ethereum Contract**" + String(err));
           console.log('error' + String(err));
         }
         else
         {
           var value = res[0];
           myDeedCount =value.toNumber();
+          refreshcallback();
         }
       });
     }
+
+    function PutAllDeedsInTableAndRender()
+    {
+      consoleLog("My DeedCount is " + myDeedCount);
+      myDeeds = [];
+      if (myDeedCount >0)
+      {
+        for (var i = 0; i <myDeedCount; i++)
+          putDeedInTable(i);
+      }
+      renderDeedTable();
+    }
   function UpdateDeedTable()
   {
-    GetDeedCount();
-    consoleLog("My DeedCount is " + myDeedCount);
-    myDeeds = [];
-    if (myDeedCount >0)
-    {
-      for (var i = 0; i <myDeedCount; i++)
-        putDeedInTable(i);
-    }
+    GetDeedCount(PutAllDeedsInTableAndRender);
   }
 
   function GetIPFSData(count,tokenID)
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
-    contract.GetIPFSAddress( tokenID,function(err, res){
+    contract.GetTokenIPFSAddress( tokenID,function(err, res){
       if (err)
       {
-        consoleLog("** [Error] GetIPFSFromToken ** " + String(err));
+        consoleErrorLog("** [Error] GetIPFSFromToken ** " + String(err));
       }
       else
       {
-        myDeeds.push({index: count, tokenID:  tokenID, ipfs: String(res[0])});
+        myDeeds.push({index: count, tokenID:  tokenID, ipfs: String(res[0]), creationTime: 1529087940, description: "a desciption"});
         renderDeedTable();
       }
     });
@@ -193,43 +200,44 @@ function myTest()
     contract.tokenOfOwnerByIndex(accaddress, index,function(err, res){
       if (err)
       {
-        consoleLog("** [Error] BurnIndex ** " + String(err));
+        consoleErrorLog("** [Error] BurnIndex ** " + String(err));
       }
       else
       {
         var tokenID = res[0];
-        Burn(tokenID);
+        BurnTokenID(tokenID);
       }
     });
   }
 
-  function Burn(tokenID)
+  function BurnTokenID(tokenID)
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
     contract.burn(accaddress, tokenID,{from: accaddress, value: 0,  gas: 1000000},function(err, res){
       if (err)
       {
-        consoleLog("** [Error] Burn ** " + String(err));
+        consoleErrorLog("** [Error] Burn ** " + String(err));
       }
       else
       {
         consoleLog("Deed Burnt");
         UpdateDeedTable();
-        renderDeedTable();
       }
     });
 
   }
   function renderDeedTable()
   {
-    var intro = "You have " +   myDeedCount + "Deeds on record";
+    var intro = "<br>You have " +   myDeedCount + " Deeds on record <br>";
 
     var html = intro + " <br> " + "<table border='1|1'>";
     html+="<tr>";
     html+="<td>"+"Index"+"</td>";
     html+="<td>"+"Token ID"+"</td>";
     html+="<td>"+"IPFs Link"+"</td>";
+    html+="<td>"+"Created at"+"</td>";
+    html+="<td>"+"Description"+"</td>";
     html+="</tr>";
 
     // loop through the deeds.
@@ -239,10 +247,15 @@ function myTest()
       var index = elem.index;
       var tokenid = elem.tokenID;
       var ipfs = elem.ipfs;
+      var creationTime = elem.creationTime;
+      var desc = elem.description
       html+="<tr>";
       html+="<td>"+index.toString();+"</td>";
       html+="<td>"+tokenid+"</td>";
-      html+="<td>"+ipfs+"</td>";
+      html+="<td>"+creationTime+"</td>";
+      html+="<td>"+desc+"</td>";
+      html+="<td>"+"<a href = "+ipfs+">"+ipfs+"</a></td>";
+
       html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
       html+="</tr>";
 
@@ -258,7 +271,7 @@ function myTest()
     contract.tokenOfOwnerByIndex(accaddress, count,function(err, res){
       if (err)
       {
-        consoleLog("** [Error] putDeedInTable ** " + String(err));
+        consoleErrorLog("** [Error] putDeedInTable ** " + String(err));
       }
       else
       {
@@ -268,7 +281,7 @@ function myTest()
     });
 
   }
-  GetDeedCount();
+  UpdateDeedTable();
     document.getElementById("sysinfo").innerHTML = "You Account ID is " + whoami() ;
     </script>
     </form>
@@ -303,6 +316,13 @@ function myTest()
       var html = thisString + "<br>" + oldcontent;
       document.getElementById("console").innerHTML = html;
     }
+    function consoleErrorLog(thisString)
+    {
+      console.log(thisString);
+      var oldcontent = document.getElementById("console").innerHTML;
+      var html = thisString + "<br>" + oldcontent;
+      document.getElementById("console").innerHTML = html;
+    }
 
     function myTest()
     {
@@ -323,7 +343,7 @@ function myTest()
             if (price == 10000000000000000)
               document.getElementById("testbutton").innerHTML = "OK!";
               else {
-                document.getElementById("testbutton").innerHTML = "C Error!";
+                document.getElementById("testbutton").innerHTML = "Connection Error!";
               }
           }
         });
