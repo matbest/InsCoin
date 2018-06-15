@@ -66,13 +66,13 @@
     var ipfshash = document.getElementById("url").innerHTML;
     var accaddress = GetAccountAddress();
     var contract = EthereumConnection.GetContract("IPFS");
-
+    var desc = document.getElementById("newTokenDescription").value;
 
     var EthinWei = 1000000000000000000; // This is 1 ETH
     var price = 0.01*EthinWei;
 
 
-    contract.mint(blah,ipfshash, {from: accaddress, value: price,  gas: 1000000},function(err, res){
+    contract.mint(blah,ipfshash,desc, {from: accaddress, value: price,  gas: 1000000},function(err, res){
       if (err)
       {
         consoleErrorLog('Failed to mint, because:' + String(err));
@@ -208,6 +208,25 @@ function myTest()
     });
 
   }
+  function GetDescriptionData(tokenID)
+  {
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.GetTokenDescription( tokenID,function(err, res){
+      var descString = "desc"+tokenID.toString();
+      if (err)
+      {
+        consoleErrorLog("** [Error] GetDescriptionData ** " + String(err));
+        document.getElementById(descString).innerHTML = "Error retrieving description";
+      }
+      else
+      {
+        document.getElementById(descString).innerHTML = String(res[0]);
+      }
+    });
+
+  }
+
   function BurnIndex(index)
   {
     var contract = EthereumConnection.GetContract("IPFS");
@@ -265,7 +284,9 @@ function myTest()
       var ipfs = elem.ipfs;
       var creationTime = elem.creationTime;
       var mintedBy = elem.minter;
-      var desc = elem.description
+      var desc = elem.description;
+
+      var descString = "desc"+tokenid.toString();
       html+="<tr>";
       html+="<td>"+index.toString();+"</td>";
       html+="<td>"+tokenid+"</td>";
@@ -273,9 +294,11 @@ function myTest()
       html+="<td>"+"<a href = "+ipfs+">"+ipfs+"</a></td>";
       html+="<td>"+creationTime+"</td>";
       html+="<td>"+mintedBy+"</td>";
-      html+="<td>"+desc+"</td>";
+      html+="<td id = \""+ descString+ "\">"+desc+"</td>";
       html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
       html+="</tr>";
+
+      GetDescriptionData(tokenid);
 
     }
     html+="</table>";
@@ -309,7 +332,11 @@ function myTest()
         <legend>Create Deed</legend>
         <input type="file" name="photo" id="photo">
         <button type="button" onclick="upload()">Upload</button>
-        <input style="width: 600px;" type="text"  id="ipfsAddress">
+        <br>
+        <br>
+        Created IPFS Hash:<input style="width: 600px;" type="text"  id="ipfsAddress"><br>
+        Enter a description:<input style="width: 600px;" type="text"  id="newTokenDescription"/><br>
+        <br>
         <button type="button" onclick="makeDeed()">Create NFT Deed</button>
       </fieldset>
     </form>
