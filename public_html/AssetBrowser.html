@@ -4,20 +4,12 @@
     <title>JavaScript file upload</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-
-  <!--
-  <script src="https://wzrd.in/standalone/buffer"></script>
-  -->
   <script src="js/browserify/buffer.js">
 </script>
   <!-- for the buffer -->
-    <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"
-    integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
-    crossorigin="anonymous"></script><!-- for the ipfs Interface -->
     <script type="text/javascript" src="js/web3.js"></script>
     <script type="text/javascript" src="js/ethjs.js"></script>
     <script type="text/javascript" src="js/BN.js"></script>
-    <script type="text/javascript" src="js/AssetCommon.js"></script>
 
     <script type= "text/javascript" src="js/IPFSContractABI.js"></script>
     <script type= "text/javascript" src="js/ETHCommon.js"></script>
@@ -27,7 +19,8 @@
   <script type="text/javascript">
   // var Buffer = require('buffer/').Buffer  // note: the trailing slash is important!
 
-  function timenow(){
+  function timenow()
+  {
       var now= new Date(),
       ampm= 'am',
       h= now.getHours(),
@@ -57,62 +50,6 @@
   return time;
   }
 
-  function makeDeed()
-  {
-    var seedtring = timenow();
-    var sha3random = web3.sha3(seedtring);
-    var blah = web3.toBigNumber(sha3random,16);
-    //id = Math.random(1000000000000);
-    // mint(  uint256 _id ,string ipfsAddress) payable external
-    var ipfshash = document.getElementById("url").innerHTML;
-    var accaddress = GetAccountAddress();
-    var contract = EthereumConnection.GetContract("IPFS");
-    var desc = document.getElementById("newTokenDescription").value;
-
-    var EthinWei = 1000000000000000000; // This is 1 ETH
-    var price = 0.01*EthinWei;
-
-
-    contract.mint(blah,ipfshash,desc, {from: accaddress, value: price,  gas: 1000000},function(err, res){
-      if (err)
-      {
-        consoleErrorLog('Failed to mint, because:' + String(err));
-      }
-      else
-      {
-        consoleLog('Minted ERC721 Deed on transaction ' + String(res));
-        UpdateDeedTable();
-      }
-    });
-  }
-    function upload()
-    {
-      const reader = new FileReader();
-      reader.onloadend = function()
-      {
-        const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
-        const buf = buffer.Buffer(reader.result) // Convert data into buffer
-        ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
-          if(err)
-          {
-            console.error(err)
-            consoleErrorLog("**IPFS** not available: " + err);
-            return
-          }
-          let url = `https://ipfs.io/ipfs/${result[0].hash}`
-
-          let ipfsaddess = result[0].hash;
-          console.log(`Url --> ${url}`)
-          document.getElementById("ipfsAddress").value= ipfsaddess;
-          document.getElementById("output").src = url;
-          document.getElementById("url").innerHTML= url
-          document.getElementById("url").href= url
-          document.getElementById("output").src = url
-        })
-      }
-      const photo = document.getElementById("photo");
-      reader.readAsArrayBuffer(photo.files[0]); // Read Provided File
-    }
   </script>
 
 <script>
@@ -149,6 +86,7 @@ function myTest()
       </fieldset>
 
     <script>
+
     var myDeedCount = 0;
     var myDeeds = [];
     function whoami()
@@ -209,6 +147,7 @@ function myTest()
     });
 
   }
+
   function GetDescriptionData(tokenID)
   {
     var contract = EthereumConnection.GetContract("IPFS");
@@ -248,45 +187,8 @@ function myTest()
         document.getElementById(minterString).innerHTML = String(res[0]);
       }
     });
-
   }
 
-  function GetMintPrice(func)
-  {
-    //var plotContract = loadContract(contractAddress, ContractABI);
-    var contract = EthereumConnection.GetContract();
-
-    contract.GetMintPriceInWEI.call().then(function(a)
-    {
-      //console.log(a.toString(10));
-      price = Number(a[0]);
-      price /=ethinwei;
-      func(price.toString())
-    });
-  }
-
-  function SetupBuyButton()
-  {
-      var buyButton = document.getElementById("MintButton");
-      var contract = EthereumConnection.GetContract("IPFS");
-
-      contract.GetMintPriceInWEI(function(err, res)
-      {
-        if (err)
-        {
-            consoleErrorLog("** [Error] SetupBuyButton() ** " + String(err));
-          buyButton.innerHTML = "not connected";
-          buyButton.disabled = true;
-        }
-        else
-        {
-          price = Number(res[0]);
-          price /=ethinwei;
-          buyButton.innerHTML = "Create NFT Deed (" + price.toString() + " Eth)";
-          buyButton.disabled = false;
-        }
-      });
-  }
 
 
   function BurnIndex(index)
@@ -397,23 +299,11 @@ function myTest()
     </script>
     </form>
 
-    <form action="/">
-      <fieldset>
-        <legend>Create Deed</legend>
-        <input type="file" name="photo" id="photo">
-        <button type="button" onclick="upload()">Upload</button>
-        <br>
-        <br>
-        Created IPFS Hash:<input style="width: 600px;" type="text"  id="ipfsAddress"><br>
-        Enter a description:<input style="width: 600px;" type="text"  id="newTokenDescription"/><br>
-        <br>
-        <button type="button"  id="MintButton" onclick="makeDeed()">Create NFT Deed</button>
-      </fieldset>
-    </form>
+
 
 
       <fieldset>
-        <legend>Your Deeds</legend>
+        <legend>All Deeds</legend>
           <button type="button" onclick="UpdateDeedTable()">Update</button>
 
         <div id="box">
@@ -426,6 +316,21 @@ function myTest()
 
     SetupBuyButton();
 
+
+    function consoleLog(thisString)
+    {
+      console.log(thisString);
+      var oldcontent = document.getElementById("console").innerHTML;
+      var html = thisString + "<br>" + oldcontent;
+      document.getElementById("console").innerHTML = html;
+    }
+    function consoleErrorLog(thisString)
+    {
+      console.log(thisString);
+      var oldcontent = document.getElementById("console").innerHTML;
+      var html = thisString + "<br>" + oldcontent;
+      document.getElementById("console").innerHTML = html;
+    }
 
     function myTest()
     {
