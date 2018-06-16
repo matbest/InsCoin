@@ -229,7 +229,7 @@ function myTest()
 
   function GetMinterData(tokenID)
   {
-    
+
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
     contract.GetTokenMinter( tokenID,function(err, res){
@@ -247,6 +247,53 @@ function myTest()
 
   }
 
+/*
+   contract.GetMintPrice(function(err, res){
+    if (err)
+    {
+        document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
+    }
+    else
+    {
+      price = Number(res[0]);
+      if (price == 10000000000000000)
+      */
+  function GetMintPrice(func)
+  {
+    //var plotContract = loadContract(contractAddress, ContractABI);
+    var contract = EthereumConnection.GetContract();
+
+    contract.GetMintPriceInWEI.call().then(function(a)
+    {
+      //console.log(a.toString(10));
+      price = Number(a[0]);
+      price /=ethinwei;
+      func(price.toString())
+    });
+  }
+
+  function SetupBuyButton()
+  {
+      var buyButton = document.getElementById("MintButton");
+      var contract = EthereumConnection.GetContract("IPFS");
+
+      contract.GetMintPriceInWEI(function(err, res)
+      {
+        if (err)
+        {
+            consoleErrorLog("** [Error] SetupBuyButton() ** " + String(err));
+          buyButton.innerHTML = "not connected";
+          buyButton.disabled = true;
+        }
+        else
+        {
+          price = Number(res[0]);
+          price /=ethinwei;
+          buyButton.innerHTML = "Create NFT Deed (" + price.toString() + " Eth)";
+          buyButton.disabled = false;
+        }
+      });
+  }
 
 
   function BurnIndex(index)
@@ -346,8 +393,10 @@ function myTest()
     });
 
   }
+  // The Startup
   UpdateDeedTable();
-    document.getElementById("sysinfo").innerHTML = "You Account ID is " + whoami() ;
+
+  document.getElementById("sysinfo").innerHTML = "You Account ID is " + whoami() ;
     </script>
     </form>
 
@@ -361,7 +410,7 @@ function myTest()
         Created IPFS Hash:<input style="width: 600px;" type="text"  id="ipfsAddress"><br>
         Enter a description:<input style="width: 600px;" type="text"  id="newTokenDescription"/><br>
         <br>
-        <button type="button" onclick="makeDeed()">Create NFT Deed</button>
+        <button type="button"  id="MintButton" onclick="makeDeed()">Create NFT Deed</button>
       </fieldset>
     </form>
 
@@ -377,6 +426,9 @@ function myTest()
   </div>
 
     <script type="text/javascript" >
+
+    SetupBuyButton();
+
 
     function consoleLog(thisString)
     {
