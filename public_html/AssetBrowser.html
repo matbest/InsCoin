@@ -4,17 +4,14 @@
     <title>JavaScript file upload</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-  <script src="js/browserify/buffer.js">
 </script>
-  <!-- for the buffer -->
+
     <script type="text/javascript" src="js/web3.js"></script>
     <script type="text/javascript" src="js/ethjs.js"></script>
     <script type="text/javascript" src="js/BN.js"></script>
-
+    <script type="text/javascript" src="js/AssetCommon.js"></script>
     <script type= "text/javascript" src="js/IPFSContractABI.js"></script>
     <script type= "text/javascript" src="js/ETHCommon.js"></script>
-
-
   </head>
   <script type="text/javascript">
   // var Buffer = require('buffer/').Buffer  // note: the trailing slash is important!
@@ -52,28 +49,6 @@
 
   </script>
 
-<script>
-function myTest()
-{
-
-  var contract = EthereumConnection.GetContract("IPFS");
-  contract.GetMintPriceInWEI(function(err, res){
-    if (err)
-    {
-        document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
-    }
-    else
-    {
-      price = Number(res[0]);
-      if (price == 10000000000000000)
-        document.getElementById("testbutton").innerHTML = "OK!";
-        else {
-          document.getElementById("testbutton").innerHTML = "C Error!";
-        }
-    }
-  });
-}
-</script>
 
   <body>
 
@@ -86,7 +61,6 @@ function myTest()
       </fieldset>
 
     <script>
-
     var myDeedCount = 0;
     var myDeeds = [];
     function whoami()
@@ -116,7 +90,7 @@ function myTest()
 
     function PutAllDeedsInTableAndRender()
     {
-      consoleLog("My DeedCount is " + myDeedCount);
+      consoleLog("Current DeedCount is " + myDeedCount);
       myDeeds = [];
       if (myDeedCount >0)
       {
@@ -147,7 +121,6 @@ function myTest()
     });
 
   }
-
   function GetDescriptionData(tokenID)
   {
     var contract = EthereumConnection.GetContract("IPFS");
@@ -187,47 +160,14 @@ function myTest()
         document.getElementById(minterString).innerHTML = String(res[0]);
       }
     });
-  }
-
-
-
-  function BurnIndex(index)
-  {
-    var contract = EthereumConnection.GetContract("IPFS");
-    var accaddress = GetAccountAddress();
-    contract.tokenOfOwnerByIndex(accaddress, index,function(err, res){
-      if (err)
-      {
-        consoleErrorLog("** [Error] BurnIndex ** " + String(err));
-      }
-      else
-      {
-        var tokenID = res[0];
-        BurnTokenID(tokenID);
-      }
-    });
-  }
-
-  function BurnTokenID(tokenID)
-  {
-    var contract = EthereumConnection.GetContract("IPFS");
-    var accaddress = GetAccountAddress();
-    contract.burn(accaddress, tokenID,{from: accaddress, value: 0,  gas: 1000000},function(err, res){
-      if (err)
-      {
-        consoleErrorLog("** [Error] Burn ** " + String(err));
-      }
-      else
-      {
-        consoleLog("Deed Burnt");
-        UpdateDeedTable();
-      }
-    });
 
   }
+
+
+
   function renderDeedTable()
   {
-    var intro = "<br>You have " +   myDeedCount + " Deeds on record <br>";
+    var intro = "<br>There are " +   myDeedCount + " Deeds on record <br>";
 
     var html = intro + " <br> " + "<table border='1|1'>";
     html+="<tr>";
@@ -237,6 +177,8 @@ function myTest()
     html+="<td>"+"IPFs Link"+"</td>";
     html+="<td>"+"Created at"+"</td>";
     html+="<td>"+"Created by"+"</td>";
+    html+="<td>"+"Vote"+"</td>";
+    html+="<td>"+"Vote"+"</td>";
    html+="</tr>";
 
     // loop through the deeds.
@@ -258,13 +200,12 @@ function myTest()
       html+="<td>"+index.toString();+"</td>";
       html+="<td id = \""+ descString+ "\">"+desc+"</td>";
 
-    //  html+="<td>"+tokenid+"</td>";
-
       html+="<td>"+"<a href = "+ipfs+">"+ipfs+"</a></td>";
       html+="<td>"+creationTime+"</td>";
       html+="<td id = \""+ minterString+ "\">"+mintedBy+"</td>";
 
-      html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
+      html+="<td> <button type=\"button\" onclick=\"VoteBenefit("+index+")\">Benefit</button> </td>";
+      html+="<td> <button type=\"button\" onclick=\"VoteCost("+index+")\">Cost</button> </td>";
       html+="</tr>";
 
       GetDescriptionData(tokenid);
@@ -312,57 +253,7 @@ function myTest()
   <div id="deedbox">
   </div>
 
-    <script type="text/javascript" >
 
-    SetupBuyButton();
-
-
-    function consoleLog(thisString)
-    {
-      console.log(thisString);
-      var oldcontent = document.getElementById("console").innerHTML;
-      var html = thisString + "<br>" + oldcontent;
-      document.getElementById("console").innerHTML = html;
-    }
-    function consoleErrorLog(thisString)
-    {
-      console.log(thisString);
-      var oldcontent = document.getElementById("console").innerHTML;
-      var html = thisString + "<br>" + oldcontent;
-      document.getElementById("console").innerHTML = html;
-    }
-
-    function myTest()
-    {
-
-      if(!web3.isConnected() || true)
-      {
-          consoleLog("**Web3** Is connected");
-        var contract = EthereumConnection.GetContract("IPFS");
-
-        contract.GetMintPrice(function(err, res){
-          if (err)
-          {
-              document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
-          }
-          else
-          {
-            price = Number(res[0]);
-            if (price == 10000000000000000)
-              document.getElementById("testbutton").innerHTML = "OK!";
-              else {
-                document.getElementById("testbutton").innerHTML = "Connection Error!";
-              }
-          }
-        });
-      }
-      else {
-        consoleLog("**Web3** Not connected");
-        document.getElementById("testbutton").innerHTML = "Web3 Not Connected";
-      }
-    }
-
-    </script>
       </fieldset>
 
 
