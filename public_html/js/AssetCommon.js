@@ -34,7 +34,14 @@ function myTest()
   contract.GetMintPriceInWEI(function(err, res){
     if (err)
     {
-        document.getElementById("testbutton").innerHTML = "Not Connected to Ethereum Error!";
+
+        document.getElementById("testbutton").innerHTML = "Contract not working";
+        if (!web3.isConnected() )
+        {
+          consoleErrorLog("**Ethererum Not Conencted**");
+
+        }
+        consoleErrorLog(GetNetworkVersion() );
     }
     else
     {

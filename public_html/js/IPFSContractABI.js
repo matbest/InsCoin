@@ -1,19 +1,24 @@
-ContractABI = [
+ContractABI =[
 	{
 		"anonymous": false,
 		"inputs": [
 			{
 				"indexed": true,
-				"name": "previousOwner",
+				"name": "_owner",
 				"type": "address"
 			},
 			{
 				"indexed": true,
-				"name": "newOwner",
+				"name": "_operator",
 				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_approved",
+				"type": "bool"
 			}
 		],
-		"name": "OwnershipTransferred",
+		"name": "ApprovalForAll",
 		"type": "event"
 	},
 	{
@@ -57,28 +62,6 @@ ContractABI = [
 		"inputs": [
 			{
 				"indexed": true,
-				"name": "_owner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "_approved",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "_tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "Approval",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
 				"name": "_from",
 				"type": "address"
 			},
@@ -101,21 +84,38 @@ ContractABI = [
 		"inputs": [
 			{
 				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
 				"name": "_owner",
 				"type": "address"
 			},
 			{
 				"indexed": true,
-				"name": "_operator",
+				"name": "_approved",
 				"type": "address"
 			},
 			{
-				"indexed": false,
-				"name": "_approved",
-				"type": "bool"
+				"indexed": true,
+				"name": "_tokenId",
+				"type": "uint256"
 			}
 		],
-		"name": "ApprovalForAll",
+		"name": "Approval",
 		"type": "event"
 	},
 	{
