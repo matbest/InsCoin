@@ -132,6 +132,7 @@
     <script>
     var myDeedCount = 0;
     var myDeeds = [];
+    var myDependacylist = [];
     function whoami()
     {
       return GetAccountAddress();
@@ -157,47 +158,16 @@
       });
     }
 
-    function PutAllDeedsInTableAndRender()
-    {
-      consoleLog("My DeedCount is " + myDeedCount);
-      myDeeds = [];
-      if (myDeedCount >0)
-      {
-        for (var i = 0; i <myDeedCount; i++)
-          putDeedInTable(i);
-      }
-      renderDeedTable();
-    }
-    
-  function UpdateDeedTable()
-  {
-    GetDeedCount(PutAllDeedsInTableAndRender);
-  }
 
-  function GetIPFSData(count,tokenID)
-  {
-    var contract = EthereumConnection.GetContract("IPFS");
-    var accaddress = GetAccountAddress();
-    contract.GetTokenIPFSAddress( tokenID,function(err, res){
-      if (err)
-      {
-        consoleErrorLog("** [Error] GetIPFSFromToken ** " + String(err));
-      }
-      else
-      {
-        myDeeds.push({index: count, tokenID:  tokenID, ipfs: String(res[0]), creationTime: timeConverter(1529087940), description: "a desciption", minter: "minterID"});
-        renderDeedTable();
-      }
-    });
 
-  }
 
-  function GetDescriptionData(tokenID)
+
+  function GetDescriptionDataInto(tokenID,descString)
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
     contract.GetTokenDescription( tokenID,function(err, res){
-      var descString = "desc"+tokenID.toString();
+
       if (err)
       {
         consoleErrorLog("** [Error] GetDescriptionData ** " + String(err));
@@ -213,13 +183,13 @@
     });
   }
 
-  function GetMinterData(tokenID)
+  function GetMinterDataInto(tokenID,minterString)
   {
 
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
     contract.GetTokenMinter( tokenID,function(err, res){
-      var minterString = "minter"+tokenID.toString();
+      //var minterString = "minter"+tokenID.toString();
       if (err)
       {
         consoleErrorLog("** [Error] GetDescriptionData ** " + String(err));
@@ -293,24 +263,97 @@
     });
 
   }
-  function renderDeedTable()
+
+  function GetDeedData(count,tokenID,deedList,thenCall)
   {
-    var intro = "<br>You have " +   myDeedCount + " Deeds on record <br>";
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.GetTokenIPFSAddress( tokenID,function(err, res){
+      if (err)
+      {
+        consoleErrorLog("** [Error] GetIPFSFromToken ** " + String(err));
+      }
+      else
+      {
+        var cnt = count;
+        var tknID = tokenID;
+        var ipfsdata = String(res[0]);
+        deedList.push({index: cnt,tokenID:  tknID, ipfs: ipfsdata, creationTime: timeConverter(1529087940), description: "a desciption", minter: "minterID"});
+        thenCall();
+
+      }
+    });
+  }
+
+  function putOwnersDeedsInTable(count)
+  {
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.tokenOfOwnerByIndex(accaddress, count,function(err, res){
+      if (err)
+      {
+        consoleErrorLog("** [Error] putDeedInTable ** " + String(err));
+      }
+      else
+      {
+        var tokenID = res[0];
+       GetDeedData(count, tokenID, myDeeds,function(){renderDeedTable("deedbox", myDeeds);});
+      }
+    });
+
+  }
+
+  function PutAllDeedsInTableAndRender()
+  {
+    consoleLog("My DeedCount is " + myDeedCount);
+    myDeeds = [];
+    if (myDeedCount >0)
+    {
+      for (var i = 0; i <myDeedCount; i++)
+        putOwnersDeedsInTable(i);
+    }
+    renderDeedTable("deedbox",myDeeds);
+  }
+
+function UpdateDeedTable()
+{
+  GetDeedCount(PutAllDeedsInTableAndRender);
+}
+
+  function addDependancy()
+  {
+    var tmp = document.getElementById("dependancyid").value;
+    var newdependancyid = new BN(tmp);
+    //myDependacylist.push(newdependancyid);
+    consoleErrorLog("Adding a dependancy "+ newdependancyid);
+    GetDeedData("1", newdependancyid, myDependacylist,function()
+      {
+        consoleLog("Ready to draw");
+        renderDeedTable("Dependbox",myDependacylist )
+      }
+    );
+
+  }
+
+  function renderDeedTable(targethtmlbox, deedtable)
+  {
+    var intro = "<br>You have " +   deedtable.length.toString() + " Deeds in the list <br>";
 
     var html = intro + " <br> " + "<table border='1|1'>";
     html+="<tr>";
     html+="<td>"+"Index"+"</td>";
-        html+="<td>"+"Description"+"</td>";
-  //  html+="<td>"+"Token ID"+"</td>";
+    html+="<td>"+"Description"+"</td>";
+    html+="<td>"+"TokenID"+"</td>";
     html+="<td>"+"IPFs Link"+"</td>";
     html+="<td>"+"Created at"+"</td>";
     html+="<td>"+"Created by"+"</td>";
-   html+="</tr>";
+    html+="<td>"+"Operations"+"</td>";
+    html+="</tr>";
 
     // loop through the deeds.
-    for (var i = 0; i <myDeeds.length; i++)
+    for (var i = 0; i <deedtable.length; i++)
     {
-      var elem = myDeeds[i];
+      var elem = deedtable[i];
       var index = elem.index;
       var tokenid = elem.tokenID;
       var ipfs = elem.ipfs;
@@ -326,7 +369,7 @@
       html+="<td>"+index.toString();+"</td>";
       html+="<td id = \""+ descString+ "\">"+desc+"</td>";
 
-    //  html+="<td>"+tokenid+"</td>";
+      html+="<td>"+tokenid+"</td>";
 
       html+="<td>"+"<a href = "+ipfs+">"+ipfs+"</a></td>";
       html+="<td>"+creationTime+"</td>";
@@ -335,31 +378,15 @@
       html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
       html+="</tr>";
 
-      GetDescriptionData(tokenid);
-      GetMinterData(tokenid);
+      GetDescriptionDataInto(tokenid,descString);
+      GetMinterDataInto(tokenid,minterString);
 
     }
     html+="</table>";
-    document.getElementById("deedbox").innerHTML = html;
+    document.getElementById(targethtmlbox).innerHTML = html;
 
   }
-  function putDeedInTable(count)
-  {
-    var contract = EthereumConnection.GetContract("IPFS");
-    var accaddress = GetAccountAddress();
-    contract.tokenOfOwnerByIndex(accaddress, count,function(err, res){
-      if (err)
-      {
-        consoleErrorLog("** [Error] putDeedInTable ** " + String(err));
-      }
-      else
-      {
-        var tokenID = res[0];
-        GetIPFSData(count, tokenID);
-      }
-    });
 
-  }
   // The Startup
   UpdateDeedTable();
 
@@ -376,21 +403,32 @@
         <br>
         Created IPFS Hash:<input style="width: 600px;" type="text"  id="ipfsAddress"><br>
         Enter a description:<input style="width: 600px;" type="text"  id="newTokenDescription"/><br>
+
         <br>
-        <button type="button"  id="MintButton" onclick="makeDeed()">Create NFT Deed</button>
-      </fieldset>
+        <button type="button"  id="AddDependancy" onclick="addDependancy()">Add Dependancy </button>
+        <input style="width: 600px;" type="text"  id="dependancyid"><br>
+
+        <legend>Your Dependancies</legend>
+
+          <div id="Dependbox">
+          <ul> <li> blah </li> <li> blah </li> <li> blah </li> <li> blah </li></ul></div>
+
+          <br>
+          <button type="button"  id="MintButton" onclick="makeDeed()">Create NFT Deed</button>
+          <br>
+
+            </fieldset>
+
+
     </form>
 
 
       <fieldset>
         <legend>Your Deeds</legend>
-          <button type="button" onclick="UpdateDeedTable()">Update</button>
+          <button type="button" onclick="UpdateDeedTable()">Update</button> (Login into Ropsten on metamask for this to work)
 
-        <div id="box">
-      </div>
-
-  <div id="deedbox">
-  </div>
+  <div id="box"></div>
+  <div id="deedbox"></div>
 
     <script type="text/javascript" >
 
