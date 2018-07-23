@@ -63,7 +63,7 @@
     var sha3random = web3.sha3(seedtring);
     var blah = web3.toBigNumber(sha3random,16);
 
-    var value = web3.toBigNumber(sha3random%100);
+    //var value = web3.toBigNumber(sha3random%100);
     //id = Math.random(1000000000000);
     // mint(  uint256 _id ,string ipfsAddress) payable external
     var ipfshash = document.getElementById("url").innerHTML;
@@ -72,14 +72,18 @@
     var desc = document.getElementById("newTokenDescription").value;
 
     var EthinWei = 1000000000000000000; // This is 1 ETH
-    var price = 0.01*EthinWei;
-    var depends = [];
-    var value = web3.toBigNumber(9);
+    var price = 0.00*EthinWei;
+
+    //var depends = [web3.toBigNumber(1234)];
+    var _depends = [];
+    var _value = web3.toBigNumber(9,16);
 
   //   setdata = contract.mint.getData(blah,ipfshash,desc, depends,value);
   //  contract.mint({from: accaddress, value: price,  gas: 1000000},function(err, res){
      //web3.eth.sendTransaction({from: accaddress, value: price,  gas: 1000000, to: contract, data: getData},function(err, res){
-      contract.mint(blah,ipfshash,desc,depends,value,{from: accaddress, value: price,  gas: 1000000},function(err, res){
+     contract.mint(blah,ipfshash,desc,_depends,_value,{from: accaddress, value: price,  gas: 300000},function(err, res){
+
+//      contract.mint(blah,ipfshash,desc,_depends,_value,{from: accaddress, value: price,  gas: 10000000},function(err, res){
         if (err)
       {
         consoleErrorLog('Failed to mint, message:' + String(err.message));
