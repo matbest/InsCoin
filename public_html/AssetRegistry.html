@@ -70,20 +70,18 @@
     var accaddress = GetAccountAddress();
     var contract = EthereumConnection.GetContract("IPFS");
     var desc = document.getElementById("newTokenDescription").value;
+    var newTokenValue = document.getElementById("newTokenValue").value;
 
     var EthinWei = 1000000000000000000; // This is 1 ETH
     var price = 0.00*EthinWei;
 
     //var depends = [web3.toBigNumber(1234)];
     var _depends = [];
-    var _value = web3.toBigNumber(9,16);
+    var _value = web3.toBigNumber(newTokenValue,16);
 
-  //   setdata = contract.mint.getData(blah,ipfshash,desc, depends,value);
-  //  contract.mint({from: accaddress, value: price,  gas: 1000000},function(err, res){
-     //web3.eth.sendTransaction({from: accaddress, value: price,  gas: 1000000, to: contract, data: getData},function(err, res){
+
      contract.mint(blah,ipfshash,desc,_depends,_value,{from: accaddress, value: price,  gas: 300000},function(err, res){
 
-//      contract.mint(blah,ipfshash,desc,_depends,_value,{from: accaddress, value: price,  gas: 10000000},function(err, res){
         if (err)
       {
         consoleErrorLog('Failed to mint, message:' + String(err.message));
@@ -214,6 +212,25 @@
 
   }
 
+  function GetValueDataInto(tokenID,valueString)
+  {
+
+    var contract = EthereumConnection.GetContract("IPFS");
+    var accaddress = GetAccountAddress();
+    contract.GetTokenValue( tokenID,function(err, res){
+      //var minterString = "minter"+tokenID.toString();
+      if (err)
+      {
+        consoleErrorLog("** [Error] GetValueData ** " + String(err));
+        document.getElementById(valueString).innerHTML = "Error retrieving value";
+      }
+      else
+      {
+        document.getElementById(valueString).innerHTML = String(res[0]);
+      }
+    });
+
+  }
 
 
   function SetupBuyButton()
@@ -354,6 +371,7 @@ function UpdateDeedTable()
     html+="<tr>";
     html+="<td>"+"Index"+"</td>";
     html+="<td>"+"Description"+"</td>";
+    html+="<td>"+"Value"+"</td>";
     html+="<td>"+"TokenID"+"</td>";
     html+="<td>"+"IPFs Link"+"</td>";
     html+="<td>"+"Created at"+"</td>";
@@ -367,6 +385,7 @@ function UpdateDeedTable()
       var elem = deedtable[i];
       var index = elem.index;
       var tokenid = elem.tokenID;
+      var tokenvalue = elem.tokenValue;
       var ipfs = elem.ipfs;
       var creationTime = elem.creationTime;
       var mintedBy = elem.minter;
@@ -374,11 +393,13 @@ function UpdateDeedTable()
 
       var descString = i.toString()+targethtmlbox+"desc"+tokenid.toString();
       var minterString = i.toString()+targethtmlbox+"minter"+tokenid.toString();
+      var valueString = i.toString()+targethtmlbox+"value"+tokenid.toString();
 
 
       html+="<tr>";
       html+="<td>"+index.toString();+"</td>";
       html+="<td id = \""+ descString+ "\">"+desc+"</td>";
+      html+="<td id = \""+ valueString+ "\">"+desc+"</td>";
 
       html+="<td>"+tokenid+"</td>";
 
@@ -391,6 +412,7 @@ function UpdateDeedTable()
 
       GetDescriptionDataInto(tokenid,descString);
       GetMinterDataInto(tokenid,minterString);
+      GetValueDataInto(tokenid,valueString);
 
     }
     html+="</table>";
