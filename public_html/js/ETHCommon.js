@@ -2,7 +2,7 @@
 // false = connect direct to localhost
 // true = connect to web3 through MetaMask
 // --
-ignoreMetamask = true;
+ignoreMetamask = false;
 
 ethinwei = 1000000000000000000; // This is 1 ETH
 
@@ -10,7 +10,7 @@ ethinwei = 1000000000000000000; // This is 1 ETH
 // use remix to deploy.
 var contractAddresses = {
   'IPFS-Ganache': '0xa208d316a9dbea6885e36a8254ca19f644d51444',
-  'IPFS-Ropsten': '0x6a121a295dc1de1693820e947726f53862b935dd',
+  'IPFS-Ropsten': '0xe1a6ffeab066405e56f3f09fd550589bd3674ab6',
     'DLand-Ganache': '0xcaf22b02250339642e73e6a3a2d9dc53653a30e8',
     'DLand-Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'
 };
