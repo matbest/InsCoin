@@ -2,8 +2,10 @@ pragma solidity ^0.4.10;
 
 
 import 'https://github.com/0xcert/ethereum-erc721/contracts/tokens/NFTokenEnumerable.sol';
+import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
-contract myIPFSToken is NFTokenEnumerable
+
+contract myInsureToken is NFTokenEnumerable,Ownable
 {
 
 
@@ -18,6 +20,8 @@ contract myIPFSToken is NFTokenEnumerable
         string myDescription;
         address myMintedBy;
         uint256 myCreationTime;
+        uint256[] myDependancies;
+        uint myValue;
     }
 
  constructor ()
@@ -35,7 +39,7 @@ contract myIPFSToken is NFTokenEnumerable
    * @param _owner NFToken owner address.
    * @param _id Unique NFToken ID.
    */
-  function mint(  uint256 _id ,string ipfsAddress, string description) public payable
+  function mint(  uint256 _id ,string ipfsAddress, string description, uint256[] _addresses,uint _value) public payable
   {
         require(msg.value == myMintPrice);
         NFTObject storage tmp = myNFTObjects[_id];
@@ -43,6 +47,17 @@ contract myIPFSToken is NFTokenEnumerable
         tmp.myMintedBy = msg.sender;
         tmp.myCreationTime = now;
         tmp.myDescription = description;
+        tmp.myDependancies = _addresses;
+
+        uint arrayLength = _addresses.length;
+        uint totalValue;
+        for (uint i=0; i<arrayLength; i++)
+        {
+            //totalValue += mappedUsers[addressIndices[i]];
+           totalValue += myNFTObjects[_addresses[i]].myValue;
+        }
+        tmp.myValue = totalValue+_value;
+
         super._mint(msg.sender, _id);
   }
 
@@ -71,6 +86,16 @@ contract myIPFSToken is NFTokenEnumerable
     function GetTokenDescription( uint256 tokenID) public view returns (string)
     {
         return myNFTObjects[tokenID].myDescription;
+    }
+
+     function GetTokenValue( uint256 tokenID) public view returns (uint)
+    {
+        return myNFTObjects[tokenID].myValue;
+    }
+
+    function GetTokenDependencies( uint256 tokenID) public view returns (uint256[])
+    {
+        return myNFTObjects[tokenID].myDependancies;
     }
 
     function GetTokenCreationTime( uint256 tokenID) public view returns (uint256)

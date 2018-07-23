@@ -2,7 +2,7 @@
 // false = connect direct to localhost
 // true = connect to web3 through MetaMask
 // --
-ignoreMetamask = false;
+ignoreMetamask = true;
 
 ethinwei = 1000000000000000000; // This is 1 ETH
 

@@ -62,6 +62,8 @@
     var seedtring = timenow();
     var sha3random = web3.sha3(seedtring);
     var blah = web3.toBigNumber(sha3random,16);
+
+    var value = web3.toBigNumber(sha3random%100);
     //id = Math.random(1000000000000);
     // mint(  uint256 _id ,string ipfsAddress) payable external
     var ipfshash = document.getElementById("url").innerHTML;
@@ -71,12 +73,17 @@
 
     var EthinWei = 1000000000000000000; // This is 1 ETH
     var price = 0.01*EthinWei;
+    var depends = [];
+    var value = web3.toBigNumber(9);
 
-
-    contract.mint(blah,ipfshash,desc, {from: accaddress, value: price,  gas: 1000000},function(err, res){
-      if (err)
+  //   setdata = contract.mint.getData(blah,ipfshash,desc, depends,value);
+  //  contract.mint({from: accaddress, value: price,  gas: 1000000},function(err, res){
+     //web3.eth.sendTransaction({from: accaddress, value: price,  gas: 1000000, to: contract, data: getData},function(err, res){
+      contract.mint(blah,ipfshash,desc,depends,value,{from: accaddress, value: price,  gas: 1000000},function(err, res){
+        if (err)
       {
-        consoleErrorLog('Failed to mint, because:' + String(err));
+        consoleErrorLog('Failed to mint, message:' + String(err.message));
+        consoleErrorLog('Failed to mint, stack:' + String(err.stack));
       }
       else
       {
@@ -177,7 +184,7 @@
       {
         var desc = String(res[0]);
         if (desc == "")
-          desc = "no description";
+          desc = "[Empty description field]";
         document.getElementById(descString).innerHTML = desc;
       }
     });
@@ -278,7 +285,7 @@
         var cnt = count;
         var tknID = tokenID;
         var ipfsdata = String(res[0]);
-        deedList.push({index: cnt,tokenID:  tknID, ipfs: ipfsdata, creationTime: timeConverter(1529087940), description: "a desciption", minter: "minterID"});
+        deedList.push({index: cnt,tokenID:  tknID, ipfs: ipfsdata, creationTime: timeConverter(1529087940), description: "table not updated yet", minter: "minterID"});
         thenCall();
 
       }
@@ -361,8 +368,8 @@ function UpdateDeedTable()
       var mintedBy = elem.minter;
       var desc = elem.description;
 
-      var descString = "desc"+tokenid.toString();
-      var minterString = "minter"+tokenid.toString();
+      var descString = i.toString()+targethtmlbox+"desc"+tokenid.toString();
+      var minterString = i.toString()+targethtmlbox+"minter"+tokenid.toString();
 
 
       html+="<tr>";
@@ -403,6 +410,7 @@ function UpdateDeedTable()
         <br>
         Created IPFS Hash:<input style="width: 600px;" type="text"  id="ipfsAddress"><br>
         Enter a description:<input style="width: 600px;" type="text"  id="newTokenDescription"/><br>
+        Value:<input style="width: 60px;" type="text"  id="newTokenValue"/><br>
 
         <br>
         <button type="button"  id="AddDependancy" onclick="addDependancy()">Add Dependancy </button>
@@ -411,7 +419,6 @@ function UpdateDeedTable()
         <legend>Your Dependancies</legend>
 
           <div id="Dependbox">
-          <ul> <li> blah </li> <li> blah </li> <li> blah </li> <li> blah </li></ul></div>
 
           <br>
           <button type="button"  id="MintButton" onclick="makeDeed()">Create NFT Deed</button>
