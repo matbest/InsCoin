@@ -28,7 +28,7 @@ contract myInsureToken is NFTokenEnumerable,Ownable
     NFTokenEnumerable()
     public payable
   {
-      myMintPrice =  10000000000000000;
+      myMintPrice =  0;
   }
 
   /* Implements a mint function which allows us and only us to
@@ -56,7 +56,7 @@ contract myInsureToken is NFTokenEnumerable,Ownable
             //totalValue += mappedUsers[addressIndices[i]];
            totalValue += myNFTObjects[_addresses[i]].myValue;
         }
-        tmp.myValue = totalValue+_value;
+        tmp.myValue = totalValue+=_value;
 
         super._mint(msg.sender, _id);
   }
