@@ -88,6 +88,8 @@ function GetAccountAddress()
     return 0;
   }
 
+
+
   var accountAddress;
 	if (ignoreMetamask == true)
 	{
@@ -97,7 +99,10 @@ function GetAccountAddress()
 	{
 		accountAddress= web3.eth.accounts[0];
 	}
-  //web3.utils.isAddress(accountAddress);
+  if (typeof accountAddress === 'undefined')
+  {
+    consoleErrorLog("Account address not defined, are you logged in?")
+  }  
   return accountAddress;
 }
 
