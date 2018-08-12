@@ -1,4 +1,4 @@
-ht<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <title>IPFS Document Registery</title>
@@ -426,8 +426,12 @@ function UpdateDeedTable()
 
   // The Startup
   UpdateDeedTable();
+  var infostring = "Your Account ID is " + whoami() ;
+  infostring += "<br>";
+  infostring += "Network Name is " +  GetNetworkVersion() +"<br>";
+  infostring += "Contract Addess is " +  EthereumConnection.GetContractAddress(GetNetworkVersion(),"IPFS")
 
-  document.getElementById("sysinfo").innerHTML = "You Account ID is " + whoami() ;
+  document.getElementById("sysinfo").innerHTML = infostring;
     </script>
     </form>
 
