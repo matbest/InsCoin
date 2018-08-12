@@ -102,8 +102,10 @@
     {
       const reader = new FileReader();
       reader.onloadend = function()
-      {
-        const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
+      {//http://18.130.119.84
+        //const ipfs = window.IpfsApi('localhost', 5001) // Connect to IPFS
+      //  var ipfs = window.IpfsApi('/ip4/18.130.119.84/tcp/5001')
+        var ipfs = window.IpfsApi();
         const buf = buffer.Buffer(reader.result) // Convert data into buffer
         ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
           if(err)
