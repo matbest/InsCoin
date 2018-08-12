@@ -108,7 +108,6 @@
         ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
           if(err)
           {
-            console.error(err)
             consoleErrorLog("**IPFS** not available: " + err);
             return
           }
