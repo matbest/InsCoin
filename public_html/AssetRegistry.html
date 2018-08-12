@@ -300,7 +300,8 @@
   {
     var contract = EthereumConnection.GetContract("IPFS");
     var accaddress = GetAccountAddress();
-    contract.GetTokenIPFSAddress( tokenID,function(err, res)
+
+    contract.GetTokenData( tokenID,function(err, res)
     {
       if (err)
       {
@@ -311,7 +312,11 @@
         var cnt = count;
         var tknID = tokenID;
         var ipfsdata = String(res[0]);
-        deedList.push({index: cnt,tokenID:  tknID, ipfs: ipfsdata, creationTime: timeConverter(1529087940), description: "table not updated yet", minter: "minterID"});
+        var description = String(res[1]);
+        var val = res[2].toNumber();
+        var creationtime = res[3].toNumber();
+        var minter = String(res[4]);
+        deedList.push({index: cnt,tokenID:  tknID, tokenValue:val, ipfs: ipfsdata, creationTime: timeConverter(creationtime), description: description, minter: minter});
         thenCall();
 
       }
@@ -357,16 +362,23 @@ function UpdateDeedTable()
   {
     var tmp = document.getElementById("dependancyid").value;
     var newdependancyid = new BN(tmp);
-    consoleErrorLog("Adding a dependancy "+ newdependancyid);
+    consoleLog("Adding a dependancy "+ newdependancyid);
     GetDeedData("1", newdependancyid, myDependacylist,function()
       {
-        consoleLog("Ready to draw");
         renderDeedTable("Dependbox",myDependacylist )
       }
     );
 
   }
 
+  function getDependancyString(dlist)
+  {
+    var output = "<ul>";
+    for (var i = 0; i <dlist.length; i++)
+      output += "<li>" + dlist[i];
+    output += "</ul>";
+    return output;
+  }
   function renderDeedTable(targethtmlbox, deedtable)
   {
     var intro = "<br>You have " +   deedtable.length.toString() + " Deeds in the list <br>";
@@ -402,8 +414,9 @@ function UpdateDeedTable()
 
       html+="<tr>";
       html+="<td>"+index.toString();+"</td>";
-      html+="<td id = \""+ descString+ "\">"+desc+"</td>";
-      html+="<td id = \""+ valueString+ "\">"+desc+"</td>";
+    //  html+="<td id = \""+ descString+ "\">"+desc+"</td>";
+    html+="<td id = \""+ descString+ "\">"+desc.toString()+"</td>";
+    html+="<td id = \""+ valueString+ "\">"+tokenvalue.toString()+"</td>";
 
       html+="<td>"+tokenid+"</td>";
 
@@ -414,9 +427,9 @@ function UpdateDeedTable()
       html+="<td> <button type=\"button\" onclick=\"BurnIndex("+index+")\">Burn</button> </td>";
       html+="</tr>";
 
-      GetDescriptionDataInto(tokenid,descString);
-      GetMinterDataInto(tokenid,minterString);
-      GetValueDataInto(tokenid,valueString);
+  //    GetDescriptionDataInto(tokenid,descString);
+  //    GetMinterDataInto(tokenid,minterString);
+  //    GetValueDataInto(tokenid,valueString);
 
     }
     html+="</table>";

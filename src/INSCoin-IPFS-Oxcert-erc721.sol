@@ -78,6 +78,17 @@ contract myInsureToken is NFTokenEnumerable,Ownable
   }
 
     /* These are the functions to retrieve the content of the tokens */
+
+    function GetTokenData( uint256 tokenID) public view returns (string,string, uint,uint256,address)
+    {
+        return (myNFTObjects[tokenID].myAddress,
+                myNFTObjects[tokenID].myDescription,
+                myNFTObjects[tokenID].myValue,
+                myNFTObjects[tokenID].myCreationTime,
+                myNFTObjects[tokenID].myMintedBy);
+
+    }
+
     function GetTokenIPFSAddress( uint256 tokenID) public view returns (string)
     {
         return myNFTObjects[tokenID].myAddress;
