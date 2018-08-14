@@ -9,7 +9,7 @@ ethinwei = 1000000000000000000; // This is 1 ETH
 //0x295a9A45eDd055Eb817748B59653d6454526CD44
 // use remix to deploy.
 var contractAddresses = {
-  'IPFS-Ganache': '0xef53e2daec57472c517f4e30da3126e1e6536277',
+  'IPFS-Ganache': '0xa208d316a9dbea6885e36a8254ca19f644d51444',
   'IPFS-Ropsten': '0xd1aca61bc4e32b7a841cb5caff17565110b97993',
     'DLand-Ganache': '0xcaf22b02250339642e73e6a3a2d9dc53653a30e8',
     'DLand-Ropsten': '0x39d059590ea9defb8574f3f2e2fb2447ea05515a'

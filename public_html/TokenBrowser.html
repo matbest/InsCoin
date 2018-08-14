@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IPFS Document Registery</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+  <!--
+  <script src="https://wzrd.in/standalone/buffer"></script>
+  -->
+  <script src="js/browserify/buffer.js">
+</script>
+  <!-- for the buffer -->
+    <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"
+    integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
+    crossorigin="anonymous"></script><!-- for the ipfs Interface -->
+    <script type="text/javascript" src="js/web3.js"></script>
+    <script type="text/javascript" src="js/ethjs.js"></script>
+    <script type="text/javascript" src="js/BN.js"></script>
+    <script type="text/javascript" src="js/AssetCommon.js"></script>
+
+    <script type= "text/javascript" src="js/IPFSContractABI.js"></script>
+    <script type= "text/javascript" src="js/ETHCommon.js"></script>
+
+
+  </head>
+
+
+  <body>
+
+    <form action="/">
+      <fieldset>
+        <legend>System Info</legend>
+        <button type="button" id="testbutton" onclick="myTest()">Test!</button>
+        <div id="sysinfo">
+      </div>
+      </fieldset>
+
+    <script>
+    myTotalDeedCount = 0;
+    function GetDeedTotalCount(refreshcallback)
+    {
+      /// --
+      var accaddress = GetAccountAddress();
+      var contract = EthereumConnection.GetContract("IPFS");
+      contract.totalSupply(function(err, res){
+        if (err)
+        {
+          consoleErrorLog("**[Error] Ethereum Contract**" + String(err));
+          console.log('error' + String(err));
+        }
+        else
+        {
+          var value = res[0];
+          myTotalDeedCount =value.toNumber();
+          refreshcallback();
+        }
+      });
+    }
+
+    function putDeedInTable(count)
+    {
+      var contract = EthereumConnection.GetContract("IPFS");
+      var accaddress = GetAccountAddress();
+      contract.tokenByIndex( count,function(err, res){
+        if (err)
+        {
+          consoleErrorLog("** [Error] putDeedInTable ** " + String(err));
+        }
+        else
+        {
+          var tokenID = res[0];
+         GetDeedData(count, tokenID, myDeeds,function(){renderDeedTable("deedbox", myDeeds);});
+        }
+      });
+
+    }
+
+
+    function PutAllTotalDeedsInTableAndRender()
+    {
+      consoleLog("DeedCount is " + myDeedCount);
+      myDeeds = [];
+      if (myDeedCount >0)
+      {
+        for (var i = 0; i <myDeedCount; i++)
+          putDeedInTable(i);
+      }
+      renderDeedTable("deedbox",myDeeds);
+    }
+
+    function UpdateTotalDeedTable()
+    {
+      GetDeedCount(PutAllTotalDeedsInTableAndRender);
+    }
+
+
+  // The Startup
+  UpdateTotalDeedTable();
+  var infostring = "Your Account ID is " + whoami() ;
+  infostring += "<br>";
+  infostring += "Network Name is " +  GetNetworkVersion() +"<br>";
+  infostring += "Contract Addess is " +  EthereumConnection.GetContractAddress(GetNetworkVersion(),"IPFS")
+
+  document.getElementById("sysinfo").innerHTML = infostring;
+    </script>
+    </form>
+
+      <fieldset>
+        <legend>All Deeds</legend>
+          <button type="button" onclick="UpdateDeedTable()">Update</button> (Login into Ropsten on metamask for this to work)
+
+  <div id="box"></div>
+  <div id="deedbox"></div>
+
+      </fieldset>
+
+
+    </br>
+    </br>
+    <a id="url"></a>
+    </br>
+    </br>
+      <fieldset>
+      <legend>Log</legend>
+      </div>
+      <div id="console">
+      </fieldset>
+    <img id="output">
+  </body>
+</html>

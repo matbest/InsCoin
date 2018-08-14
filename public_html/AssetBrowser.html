@@ -16,22 +16,7 @@
   <script type="text/javascript">
   // var Buffer = require('buffer/').Buffer  // note: the trailing slash is important!
 
-  function timenow()
-  {
-      var now= new Date(),
-      ampm= 'am',
-      h= now.getHours(),
-      m= now.getMinutes(),
-      s= now.getSeconds();
-      if(h>= 12){
-          if(h>12) h -= 12;
-          ampm= 'pm';
-      }
 
-      if(m<10) m= '0'+m;
-      if(s<10) s= '0'+s;
-      return now.toLocaleDateString()+ ' ' + h + ':' + m + ':' + s + ' ' + ampm;
-  }
 
   function timeConverter(UNIX_timestamp)
   {
@@ -61,32 +46,7 @@
       </fieldset>
 
     <script>
-    var myDeedCount = 0;
-    var myDeeds = [];
-    function whoami()
-    {
-      return GetAccountAddress();
-    }
 
-    function GetDeedCount(refreshcallback)
-    {
-      /// --
-      var accaddress = GetAccountAddress();
-      var contract = EthereumConnection.GetContract("IPFS");
-      contract.balanceOf(accaddress,function(err, res){
-        if (err)
-        {
-          consoleErrorLog("**[Error] Ethereum Contract**" + String(err));
-          console.log('error' + String(err));
-        }
-        else
-        {
-          var value = res[0];
-          myDeedCount =value.toNumber();
-          refreshcallback();
-        }
-      });
-    }
 
     function PutAllDeedsInTableAndRender()
     {
