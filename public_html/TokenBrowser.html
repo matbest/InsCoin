@@ -79,11 +79,11 @@
 
     function PutAllTotalDeedsInTableAndRender()
     {
-      consoleLog("DeedCount is " + myDeedCount);
+      consoleLog("DeedCount is " + myTotalDeedCount);
       myDeeds = [];
-      if (myDeedCount >0)
+      if (myTotalDeedCount >0)
       {
-        for (var i = 0; i <myDeedCount; i++)
+        for (var i = 0; i <myTotalDeedCount; i++)
           putDeedInTable(i);
       }
       renderDeedTable("deedbox",myDeeds);
@@ -91,7 +91,7 @@
 
     function UpdateTotalDeedTable()
     {
-      GetDeedCount(PutAllTotalDeedsInTableAndRender);
+      GetDeedTotalCount(PutAllTotalDeedsInTableAndRender);
     }
 
 
@@ -108,7 +108,7 @@
 
       <fieldset>
         <legend>All Deeds</legend>
-          <button type="button" onclick="UpdateDeedTable()">Update</button> (Login into Ropsten on metamask for this to work)
+          <button type="button" onclick="UpdateTotalDeedTable()">Update</button> (Login into Ropsten on metamask for this to work)
 
   <div id="box"></div>
   <div id="deedbox"></div>
