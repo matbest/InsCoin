@@ -73,12 +73,12 @@
       reader.onloadend = function()
       {
         const ipfs = window.IpfsApi('localhost', 5001) // THIS WORKS with a local IPFS node
-
+        var online = ipfs.isOnline();
         const buf = buffer.Buffer(reader.result) // Convert data into buffer
         ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
           if(err)
           {
-            consoleErrorLog("**IPFS** not available: " + err);
+            consoleErrorLog("**IPFS** not available: ipfs.files.add() returned error: " + err);
             return
           }
           let url = `https://ipfs.io/ipfs/${result[0].hash}`

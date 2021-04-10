@@ -1,7 +1,17 @@
 # Contracts of Contracts
 
 
-### General Steps:
+### Blockchain Local contract Creation and Deugging:
+1. install MetaMask
+
+1. install  ganache https://www.trufflesuite.com/docs/ganache/quickstart
+1. run Ganache
+1. In ganache change the port to be 8545   
+1. IUn metamask select localhost 8545 as the Blockchain
+* In metamask create a new account by using a priovate key from Ganache
+
+
+### Blockchain running test contracts on test blockchain networks  
 1. install MetaMask
 1. connect MetaMask to Ropsten
 
